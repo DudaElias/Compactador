@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 FILE *arq;
-void lerArq(char *nome)
+void lerArq(char *nome, char tipo)
 {
     if(fopen(nome, "r") == NULL)
     {
@@ -10,7 +10,15 @@ void lerArq(char *nome)
     }
     else
     {
+        if(tipo == 'c')
+        {
 
+        }
+        else if(tipo == 'd')  // LORENNA EH COM VC
+        {
+
+
+        }
     }
 
 }

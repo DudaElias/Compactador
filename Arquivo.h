@@ -2,4 +2,4 @@
 
 FILE *arq;
 
-extern void lerArq(char *nome);
+extern void lerArq(char *nome, char tipo);

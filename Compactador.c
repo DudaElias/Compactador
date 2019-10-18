@@ -20,10 +20,12 @@ int main()
         case 1:
             printf("Digite o caminho do arquivo: ");
             scanf("%s" , &nome);
-            lerArq(nome);
+            lerArq(nome, 'c');
             break;
         case 2:
-            printf("2");
+            printf("Digite o caminho do arquivo: ");
+            scanf("%s" , &nome);
+            lerArq(nome, 'd');
             break;
         case 3:
             break;
