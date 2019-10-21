@@ -56,15 +56,18 @@ void lerArq(char *nome, char tipo)
                 }
             }
             int j = 0;
-            for(;j <= tamanho;j++)
+            for(;j < tamanho;j++)
             {
-                NoArvore *x = malloc(sizeof(NoArvore));
+
+                NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
                 x->freq = frequencias[j];
                 x->letra = vetorDeLetras[j];
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                NoFila* no = malloc(sizeof(NoFila));
+                NoFila *no = (NoFila*)malloc(sizeof(NoFila));
+                no->dado = (NoArvore*)malloc(sizeof(NoArvore));
+                no->prox = (NoArvore*)malloc(sizeof(NoArvore));
                 no->dado = x;
                 no->prox = NULL;
                 push(&f, no);

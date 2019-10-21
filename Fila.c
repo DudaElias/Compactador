@@ -9,37 +9,39 @@ NoFila create()
     return n;
 }
 
-void push(NoFila *raiz, NoFila *dado)
+void push(NoFila *raiz, NoArvore *dado)
 {
     NoFila *fila = raiz;
-    NoFila *dadoNovo = (NoFila*)malloc(sizeof(NoFila));
-    dadoNovo->dado->letra = dado->dado->letra;
-    dadoNovo->dado->freq = dado->dado->freq;
-    dadoNovo->dado->dir = dado->dado->dir;
-    dadoNovo->dado->esq = dado->dado->esq;
-    dadoNovo->dado->vazio = dado->dado->vazio;
+    NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
+    novoNo->dir = dado->dir;
+    novoNo->esq = dado ->esq;
+    novoNo->freq = dado->freq;
+    novoNo->letra = dado->letra;
+    novoNo->vazio = dado->vazio;
+    NoFila* novoNoFila = (NoFila*)malloc(sizeof(NoFila));
+    novoNoFila->dado = novoNo;
 
     if(fila->dado == NULL)
-        fila->dado = dadoNovo;
+        fila->dado = novoNoFila;
     else
     {
         while(fila->dado != NULL)
             fila = fila->prox;
-        dadoNovo->prox = fila->prox;
-        fila->prox = dadoNovo;
+        novoNoFila->prox = fila->prox;
+        fila->prox = novoNoFila;
 
     }
 
 }
 
 
-NoFila* pop(FilaOriginal *f)
+/*NoFila* pop(NoFila *f)
 {
-    No *c = f->dados[*(f->primeiro++)];
+    NoArvore *c = f->[*(f->primeiro++)];
 
     if(f->primeiro == f->tamanho)
         f->primeiro = 0;
 
     f->dadosSalvos--;
     return c;
-}
+}*/

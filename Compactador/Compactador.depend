@@ -32,3 +32,25 @@
 	"Fila.h"
 	<stdlib.h>
 
+1571678822 source:c:\users\u18188\documents\github\compactador\arquivo.c
+	"Arquivo.h"
+	<stdio.h>
+	<stdlib.h>
+	"Fila.h"
+
+1571675366 c:\users\u18188\documents\github\compactador\arquivo.h
+	<stdio.h>
+
+1571679355 c:\users\u18188\documents\github\compactador\fila.h
+
+1571675366 source:c:\users\u18188\documents\github\compactador\arvore.c
+
+1571679409 source:c:\users\u18188\documents\github\compactador\fila.c
+	"Fila.h"
+	<stdlib.h>
+
+1571675366 source:c:\users\u18188\documents\github\compactador\compactador\main.c
+	<stdio.h>
+	"../Arquivo.h"
+	"../Fila.h"
+

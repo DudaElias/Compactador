@@ -10,14 +10,14 @@ typedef struct NoArvore
 }NoArvore;
 
 typedef struct NoFila{
-    NoArvore dado;
+    NoArvore* dado;
     NoArvore* prox;
 
 }NoFila;
 
 
 extern NoFila create();
-extern void push(NoFila *f, NoFila *dado);
+extern void push(NoFila *f, NoArvore *dado);
 extern NoFila* pop(NoFila *f);
 
 #endif
