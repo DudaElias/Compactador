@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "Arquivo.c"
-#include "Fila.h"
+#include "../Arquivo.h"
+#include "../Fila.h"
 int main()
 {
     int escolha;

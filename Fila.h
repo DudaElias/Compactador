@@ -1,22 +1,23 @@
-typedef struct FilaOriginal{
-    int tamanho;
-    void *dados;
-    int *primeiro;
-    int *ultimo;
-    int dadosSalvos;
-} FilaOriginal;
+#ifndef FILA
+#define FILA
 
-
-typedef struct No
+typedef struct NoArvore
 {
     char letra;
     char vazio;
     int freq;
     struct NoArvore *esq, *dir;
+}NoArvore;
 
-}
-No;
+typedef struct NoFila{
+    NoArvore dado;
+    NoArvore* prox;
 
-extern void create(FilaOriginal *f, int t, int tamanhoDado);
-extern void push(FilaOriginal *f, No *dado);
-extern No pop(FilaOriginal *f);
+}NoFila;
+
+
+extern NoFila create();
+extern void push(NoFila *f, NoFila *dado);
+extern NoFila* pop(NoFila *f);
+
+#endif

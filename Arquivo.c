@@ -16,8 +16,7 @@ void lerArq(char *nome, char tipo)
     }
     else
     {
-        FilaOriginal *f;
-        create(f, tamanho, sizeof(char));
+        NoFila f = create();
         tamanho = 0;
         int i = 0;
         char aux;
@@ -59,17 +58,27 @@ void lerArq(char *nome, char tipo)
             int j = 0;
             for(;j <= tamanho;j++)
             {
-                No *x;
+                NoArvore *x = malloc(sizeof(NoArvore));
                 x->freq = frequencias[j];
                 x->letra = vetorDeLetras[j];
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                push(f, x);
+                NoFila* no = malloc(sizeof(NoFila));
+                no->dado = x;
+                no->prox = NULL;
+                push(&f, no);
+                free(x);
+                free(no);
             }
             j = 0;
-            for(;j <=tamanho;j++)
-                printf("%c", pop(f));
+            for(;j <tamanho-1;j++)
+            {
+                /*printf("%c", pop(&f)->letra);
+                printf("%d", pop(&f)->freq);*/
+                printf("%c", vetorDeLetras[j]);
+                printf("%d\n", frequencias[j]);
+            }
 
         }
         else if(tipo == 'd')  // LORENNA EH COM VC

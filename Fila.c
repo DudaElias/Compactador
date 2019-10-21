@@ -1,46 +1,41 @@
-
 #include "Fila.h"
+#include <stdlib.h>
 
-typedef struct FilaOriginal{
-    int tamanho;
-    void *dados;
-    int *primeiro;
-    int *ultimo;
-    int dadosSalvos;
-} FilaOriginal;
-
-
-typedef struct No
+NoFila create()
 {
-    char letra;
-    char vazio;
-    int freq;
-    struct NoArvore *esq, *dir;
-
-}
-No;
-
-
-void create(FilaOriginal *f, int t, int tamanhoDado)
-{
-    f->tamanho = t;
-    f->dadosSalvos = 0;
-    f->primeiro = 0;
-    f->ultimo = -1;
-    f->dados = malloc(f->tamanho*tamanhoDado);
+    NoFila n;
+    n.dado = NULL;
+    n.prox = NULL;
+    return n;
 }
 
-void push(FilaOriginal *f, No *dado)
+void push(NoFila *raiz, NoFila *dado)
 {
-    f->dados[f->ultimo + 1] = dado;
-    f->ultimo++;
-    f->tamanho++;
+    NoFila *fila = raiz;
+    NoFila *dadoNovo = (NoFila*)malloc(sizeof(NoFila));
+    dadoNovo->dado->letra = dado->dado->letra;
+    dadoNovo->dado->freq = dado->dado->freq;
+    dadoNovo->dado->dir = dado->dado->dir;
+    dadoNovo->dado->esq = dado->dado->esq;
+    dadoNovo->dado->vazio = dado->dado->vazio;
+
+    if(fila->dado == NULL)
+        fila->dado = dadoNovo;
+    else
+    {
+        while(fila->dado != NULL)
+            fila = fila->prox;
+        dadoNovo->prox = fila->prox;
+        fila->prox = dadoNovo;
+
+    }
+
 }
 
 
-No pop(FilaOriginal *f)
+NoFila* pop(FilaOriginal *f)
 {
-    No *c = f->dados[f->primeiro++];
+    No *c = f->dados[*(f->primeiro++)];
 
     if(f->primeiro == f->tamanho)
         f->primeiro = 0;
