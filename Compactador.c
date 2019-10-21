@@ -27,7 +27,6 @@ int main()
             scanf("%s" , &nome);
             lerArq(nome, 'd');
             break;
-        case 3:
             break;
     }
     return 0;
