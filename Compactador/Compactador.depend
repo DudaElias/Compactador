@@ -1,16 +1,16 @@
 # depslib dependency file v1.0
-1571665671 source:c:\users\u18190\documents\github\compactador\arquivo.c
+1571690166 source:c:\users\u18190\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
 	"Fila.h"
 
-1571662198 c:\users\u18190\documents\github\compactador\arquivo.h
+1571690167 c:\users\u18190\documents\github\compactador\arquivo.h
 	<stdio.h>
 
-1571668446 c:\users\u18190\documents\github\compactador\fila.h
+1571690169 c:\users\u18190\documents\github\compactador\fila.h
 
-1571654824 source:c:\users\u18190\documents\github\compactador\arvore.c
+1571690168 source:c:\users\u18190\documents\github\compactador\arvore.c
 
 1571662042 source:c:\users\u18190\documents\github\compactador\compactador.c
 	<stdio.h>
@@ -23,12 +23,12 @@
 	<stdlib.h>
 	"Fila.h"
 
-1571664052 source:c:\users\u18190\documents\github\compactador\compactador\main.c
+1571690169 source:c:\users\u18190\documents\github\compactador\compactador\main.c
 	<stdio.h>
 	"../Arquivo.h"
 	"../Fila.h"
 
-1571665256 source:c:\users\u18190\documents\github\compactador\fila.c
+1571690589 source:c:\users\u18190\documents\github\compactador\fila.c
 	"Fila.h"
 	<stdlib.h>
 

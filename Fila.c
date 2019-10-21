@@ -25,7 +25,7 @@ void push(NoFila *raiz, NoArvore *dado)
         fila->dado = novoNoFila;
     else
     {
-        while(fila->dado != NULL)
+        while(fila->prox != NULL)
             fila = fila->prox;
         novoNoFila->prox = fila->prox;
         fila->prox = novoNoFila;
@@ -35,13 +35,10 @@ void push(NoFila *raiz, NoArvore *dado)
 }
 
 
-/*NoFila* pop(NoFila *f)
+NoFila* pop(NoFila *f)
 {
-    NoArvore *c = f->[*(f->primeiro++)];
+    NoArvore *c = f->dado;
 
-    if(f->primeiro == f->tamanho)
-        f->primeiro = 0;
-
-    f->dadosSalvos--;
+    f= f->prox;
     return c;
-}*/
+}

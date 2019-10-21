@@ -77,10 +77,10 @@ void lerArq(char *nome, char tipo)
             j = 0;
             for(;j <tamanho-1;j++)
             {
-                /*printf("%c", pop(&f)->letra);
-                printf("%d", pop(&f)->freq);*/
-                printf("%c", vetorDeLetras[j]);
-                printf("%d\n", frequencias[j]);
+                printf("%c", pop(&f)->letra);
+                printf("%d", pop(&f)->freq);
+                /*printf("%c", vetorDeLetras[j]);
+                printf("%d\n", frequencias[j]);*/
             }
 
         }
