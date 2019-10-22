@@ -1,18 +1,18 @@
 #include "Fila.h"
 #include <stdlib.h>
 
-NoFila create()
+NoFila* create()
 {
-    NoFila n;
-    n.dado = NULL;
-    n.prox = NULL;
+    NoFila* n = (NoFila*)malloc(sizeof(NoFila));
+    n->dado = NULL;
+    n->prox = NULL;
     return n;
 }
 
-NoFila* push(NoFila *raiz, NoArvore *dado)
+void push(NoFila **raiz, NoArvore *dado)
 {
-    NoFila *fila = raiz;
 
+    NoFila *fila = *raiz;
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
     novoNo->dir = dado->dir;
     novoNo->esq = dado ->esq;
@@ -25,20 +25,19 @@ NoFila* push(NoFila *raiz, NoArvore *dado)
     if(fila->dado == NULL)
     {
         fila->dado = novoNo;
-        return raiz;
     }
     else
     {
-        if(fila->dado->freq > novoNo->freq)
+        if(fila->dado->freq < novoNo->freq)
         {
             novoNoFila->prox = fila;
-            return novoNoFila;
+            *raiz = novoNoFila;
+            return;
         }
         while(fila->prox != NULL && fila->prox->dado->freq <= novoNo->freq)
             fila = fila->prox;
         novoNoFila->prox = fila->prox;
         fila->prox = novoNoFila;
-        return raiz;
     }
 
 }

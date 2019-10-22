@@ -12,7 +12,7 @@ int tamanho;
 
 void criarArvore(NoFila* f)
 {
-    NoFila* novoNo=(NoFila*)malloc(sizeof(NoFila));
+    /*NoFila* novoNo=(NoFila*)malloc(sizeof(NoFila));
     int frequen;
 
     frequen = f->dado->freq + f->prox->dado->freq;
@@ -21,7 +21,7 @@ void criarArvore(NoFila* f)
     novoNo->dado->dir = f->prox->dado;
     novoNo->dado->esq = f->dado;
 
-    novoNo->prox = f->prox->prox;
+    novoNo->prox = f->prox->prox;*/
 }
 
 void lerArq(char *nome, char tipo)
@@ -32,7 +32,7 @@ void lerArq(char *nome, char tipo)
     }
     else
     {
-        NoFila f = create();
+        NoFila* f = create();
         tamanho = 0;
         int i = 0;
         int dados = 0;
@@ -83,7 +83,7 @@ void lerArq(char *nome, char tipo)
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                f = *push(&f, x);
+                push(&f, x);
                 free(x);
             }
             criarArvore(&f);
