@@ -76,7 +76,7 @@
 	"../Arquivo.h"
 	"../Fila.h"
 
-1571740232 source:c:\users\u18343\documents\github\compactador\arquivo.c
+1571758894 source:c:\users\u18343\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
@@ -85,11 +85,11 @@
 1571740232 c:\users\u18343\documents\github\compactador\arquivo.h
 	<stdio.h>
 
-1571740232 c:\users\u18343\documents\github\compactador\fila.h
+1571758879 c:\users\u18343\documents\github\compactador\fila.h
 
 1571740232 source:c:\users\u18343\documents\github\compactador\arvore.c
 
-1571740232 source:c:\users\u18343\documents\github\compactador\fila.c
+1571758705 source:c:\users\u18343\documents\github\compactador\fila.c
 	"Fila.h"
 	<stdlib.h>
 

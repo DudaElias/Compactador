@@ -83,7 +83,7 @@ void lerArq(char *nome, char tipo)
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                push(&f, x);
+                f = *push(&f, x);
                 free(x);
             }
             criarArvore(&f);

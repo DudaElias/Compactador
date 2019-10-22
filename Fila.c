@@ -9,7 +9,7 @@ NoFila create()
     return n;
 }
 
-void push(NoFila *raiz, NoArvore *dado)
+NoFila* push(NoFila *raiz, NoArvore *dado)
 {
     NoFila *fila = raiz;
 
@@ -23,19 +23,22 @@ void push(NoFila *raiz, NoArvore *dado)
     novoNoFila->dado = novoNo;
     novoNoFila->prox = NULL;
     if(fila->dado == NULL)
+    {
         fila->dado = novoNo;
+        return raiz;
+    }
     else
     {
-        if( fila->prox == NULL && fila->dado->freq > novoNo->freq)
+        if(fila->dado->freq > novoNo->freq)
         {
-            fila->prox = novoNoFila->prox;
             novoNoFila->prox = fila;
-            return;
+            return novoNoFila;
         }
         while(fila->prox != NULL && fila->prox->dado->freq <= novoNo->freq)
             fila = fila->prox;
         novoNoFila->prox = fila->prox;
         fila->prox = novoNoFila;
+        return raiz;
     }
 
 }

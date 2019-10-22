@@ -17,7 +17,7 @@ typedef struct NoFila{
 
 
 extern NoFila create();
-extern void push(NoFila *f, NoArvore *dado);
+extern NoFila* push(NoFila *f, NoArvore *dado);
 extern void percorrer(NoFila *f);
 extern NoArvore* pop(NoFila *f);
 
