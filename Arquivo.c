@@ -12,8 +12,16 @@ int tamanho;
 
 void criarArvore(NoFila* f)
 {
+    NoFila* novoNo=(NoFila*)malloc(sizeof(NoFila));
+    int frequen;
 
+    frequen = f->dado->freq + f->prox->dado->freq;
+    novoNo->dado->freq = frequen;
 
+    novoNo->dado->dir = f->prox->dado;
+    novoNo->dado->esq = f->dado;
+
+    novoNo->prox = f->prox->prox;
 }
 
 void lerArq(char *nome, char tipo)
@@ -90,8 +98,6 @@ void lerArq(char *nome, char tipo)
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
-
-
         }
     }
 
