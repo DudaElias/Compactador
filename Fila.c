@@ -28,7 +28,7 @@ void push(NoFila **raiz, NoArvore *dado)
     }
     else
     {
-        if(fila->dado->freq < novoNo->freq)
+        if(fila->dado->freq > novoNo->freq)
         {
             novoNoFila->prox = fila;
             *raiz = novoNoFila;
