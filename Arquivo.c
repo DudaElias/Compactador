@@ -63,11 +63,9 @@ void lerArq(char *nome, char tipo)
                         tamanho++;
                     }
                 }
-                dados++;
 
             }
             fclose(arq);
-            printf("%d", dados);
             int j = 0;
             for(;j < tamanho;j++)
             {
@@ -82,7 +80,7 @@ void lerArq(char *nome, char tipo)
             }
             criarArvore(&f);
             j = 0;
-            for(;j <tamanho-1;j++)
+            for(;j <tamanho;j++)
             {
                 NoArvore* x = pop(&f);
                 printf("%c\n", (unsigned char)x->letra);
