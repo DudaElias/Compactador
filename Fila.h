@@ -3,7 +3,7 @@
 
 typedef struct NoArvore
 {
-    char letra;
+    unsigned char letra;
     char vazio;
     int freq;
     struct NoArvore *esq, *dir;
@@ -11,13 +11,14 @@ typedef struct NoArvore
 
 typedef struct NoFila{
     NoArvore* dado;
-    NoArvore* prox;
+    struct NoFila* prox;
 
 }NoFila;
 
 
 extern NoFila create();
 extern void push(NoFila *f, NoArvore *dado);
-extern NoFila* pop(NoFila *f);
+extern void percorrer(NoFila *f);
+extern NoArvore* pop(NoFila *f);
 
 #endif

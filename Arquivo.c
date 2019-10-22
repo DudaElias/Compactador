@@ -5,12 +5,20 @@
 
 
 FILE *arq;
-char *vetorDeLetras;
+unsigned char *vetorDeLetras;
 int *frequencias;
 int tamanho;
+
+
+void criarArvore(NoFila* f)
+{
+
+
+}
+
 void lerArq(char *nome, char tipo)
 {
-    if( (arq = fopen(nome, "r")) == NULL)
+    if( (arq = fopen(nome, "rb")) == NULL)
     {
         printf("Não foi possivel abrir o arquivo, verifique sua existência e o caminho");
     }
@@ -19,9 +27,10 @@ void lerArq(char *nome, char tipo)
         NoFila f = create();
         tamanho = 0;
         int i = 0;
-        char aux;
-        vetorDeLetras = (char*)malloc(15000*sizeof(char));
-        frequencias = (int*)malloc(15000*sizeof(int));
+        int dados = 0;
+        unsigned char aux;
+        vetorDeLetras = (unsigned char*)malloc(256*sizeof(char));
+        frequencias = (int*)malloc(256*sizeof(int));
 
         if(tipo == 'c')
         {
@@ -29,7 +38,7 @@ void lerArq(char *nome, char tipo)
             while(!feof(arq))
             {
                 achou = 0;
-                aux = getc(arq);
+                fread(&aux, sizeof(char), 1, arq);
                 if(tamanho == 0)
                 {
                     vetorDeLetras[tamanho] = aux;
@@ -54,35 +63,32 @@ void lerArq(char *nome, char tipo)
                         tamanho++;
                     }
                 }
+                dados++;
+
             }
+            fclose(arq);
+            printf("%d", dados);
             int j = 0;
             for(;j < tamanho;j++)
             {
-
                 NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
-                x->freq = frequencias[j];
-                x->letra = vetorDeLetras[j];
+                x->freq = (int)frequencias[j];
+                x->letra = (unsigned char)vetorDeLetras[j];
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                NoFila *no = (NoFila*)malloc(sizeof(NoFila));
-                no->dado = (NoArvore*)malloc(sizeof(NoArvore));
-                no->prox = (NoArvore*)malloc(sizeof(NoArvore));
-                no->dado = x;
-                no->prox = NULL;
-                push(&f, no);
+                push(&f, x);
                 free(x);
-                free(no);
             }
+            criarArvore(&f);
             j = 0;
             for(;j <tamanho-1;j++)
             {
-                printf("%c", pop(&f)->letra);
-                printf("%d", pop(&f)->freq);
-                /*printf("%c", vetorDeLetras[j]);
-                printf("%d\n", frequencias[j]);*/
+                NoArvore* x = pop(&f);
+                printf("%c\n", (unsigned char)x->letra);
+                printf("%d\n", (int)x->freq);
             }
-
+            //percorrer(&f);
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {

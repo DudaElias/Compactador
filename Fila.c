@@ -22,7 +22,7 @@ void push(NoFila *raiz, NoArvore *dado)
     novoNoFila->dado = novoNo;
 
     if(fila->dado == NULL)
-        fila->dado = novoNoFila;
+        fila->dado = novoNoFila->dado;
     else
     {
         while(fila->prox != NULL)
@@ -35,10 +35,27 @@ void push(NoFila *raiz, NoArvore *dado)
 }
 
 
-NoFila* pop(NoFila *f)
+void percorrer(NoFila *f)
 {
-    NoArvore *c = f->dado;
+    NoFila* n = f;
+    while(n->prox != NULL)
+    {
+        printf("%u\n", n->dado->letra);
+        printf("%d\n", n->dado->freq);
+        n = n->prox;
+    }
 
-    f= f->prox;
+}
+
+NoArvore* pop(NoFila *f)
+{
+    NoArvore *c = (NoArvore*)malloc(sizeof(NoArvore));
+    c->dir = f->dado->dir;
+    c->esq = f->dado ->esq;
+    c->freq = f->dado->freq;
+    c->letra = f->dado->letra;
+    c->vazio = f->dado->vazio;
+    f->dado = f->prox->dado;
+    f->prox = f->prox->prox;
     return c;
 }
