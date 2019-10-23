@@ -15,6 +15,7 @@ void criarArvore(NoFila* f)
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
     novoNo->esq = pop(f);
     novoNo->dir = pop(f);
+    novoNo->vazio = 1;
     novoNo->freq = novoNo->esq->freq + novoNo->dir->freq;
     novoNo->letra= NULL;
     push(&f, novoNo);
@@ -41,10 +42,9 @@ void lerArq(char *nome, char tipo)
         if(tipo == 'c')
         {
             char achou;
-            while(!feof(arq))
+            while(fread(&aux, sizeof(char), 1, arq))
             {
                 achou = 0;
-                fread(&aux, sizeof(char), 1, arq);
                 if(tamanho == 0)
                 {
                     vetorDeLetras[tamanho] = aux;
@@ -89,7 +89,11 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvore(f);
             }
-            percorrerArvore(f->dado);
+            //percorrerArvore(f->dado);
+
+            char codigo[200];
+            int topo = 0;
+            criarTabela(f->dado, codigo, topo);
             //percorrer(f);
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
@@ -100,40 +104,27 @@ void lerArq(char *nome, char tipo)
 
 }
 
-//fazer tabela codigos
-void criarTabela(NoArvore* a)
+void criarTabela(NoArvore* a, char codigo[], int topo)
 {
-    char codigo[];
-    char caracter[];
     int i;
-
-    if(a == NULL)
-        return;
-
-    while(a->)
-
-    for(i = 0; 0==0 ; i++)
+    if(a->esq)
     {
-        codigo[i] = '0';
-        percorrerArvore(a->esq);
-        if(a->esq == NULL && a->dir == NULL)
-        {
-            codigo[i]= NULL;
-            //voltar ponteiro pro anterior
-        }
-        codigo[i] = '1';
-        percorrerArvore(a->dir);
+        codigo[topo] = 0;
+        criarTabela(a->esq, codigo, topo+1);
     }
-/*
-    while(a->esq != NULL && a->dir != NULL)
+    if(a->dir)
     {
-        codigo[] = '0';
-        percorrerArvore(a->esq);
-        codigo[] = '1';
-        percorrerArvore(a->dir);
-    }*/
-
-
+        codigo[topo] = 1;
+        criarTabela(a->dir, codigo, topo+1);
+    }
+    if(a->esq == NULL && a->dir == NULL)
+    {
+        i = 0;
+        printf("%c\n", a->letra);
+        for(; i< topo; i++)
+            printf("%d", codigo[i]);
+        printf("\n");
+    }
 }
 
 void percorrerArvore(NoArvore* a)
