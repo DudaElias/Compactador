@@ -107,6 +107,7 @@ void lerArq(char *nome, char tipo)
 void criarTabela(NoArvore* a, char codigo[], int topo)
 {
     int i;
+    //criar variavel para retornar a tabela
     if(a->esq)
     {
         codigo[topo] = 0;
@@ -135,4 +136,15 @@ void percorrerArvore(NoArvore* a)
     printf("%c\t", a->letra);
     printf("%d\n\n", a->freq);
     percorrerArvore(a->dir);
+}
+
+void criarArquivo(char codigo[])
+{
+    unsigned int qtdBytes;
+    unsigned int qtdChar;
+
+    FILE *Fil;
+    fopen(codigo,"wb");
+    fputs(codigo,Fil);
+    printf();
 }
