@@ -54,20 +54,21 @@
 	"../Arquivo.h"
 	"../Fila.h"
 
-1571709337 source:d:\documentos\github\compactador\arquivo.c
+1571789223 source:d:\documentos\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
 	"Fila.h"
 
-1571704884 d:\documentos\github\compactador\arquivo.h
+1571788966 d:\documentos\github\compactador\arquivo.h
 	<stdio.h>
+	"Fila.h"
 
-1571703902 d:\documentos\github\compactador\fila.h
+1571780339 d:\documentos\github\compactador\fila.h
 
 1571445338 source:d:\documentos\github\compactador\arvore.c
 
-1571704811 source:d:\documentos\github\compactador\fila.c
+1571785870 source:d:\documentos\github\compactador\fila.c
 	"Fila.h"
 	<stdlib.h>
 

@@ -12,7 +12,7 @@ int tamanho;
 
 void criarArvore(NoFila* f)
 {
-    NoFila* novoNo=(NoFila*)malloc(sizeof(NoFila));
+    /*NoFila* novoNo=(NoFila*)malloc(sizeof(NoFila));
     int frequen;
 
     frequen = f->dado->freq + f->prox->dado->freq;
@@ -21,7 +21,7 @@ void criarArvore(NoFila* f)
     novoNo->dado->dir = f->prox->dado;
     novoNo->dado->esq = f->dado;
 
-    novoNo->prox = f->prox->prox;
+    novoNo->prox = f->prox->prox;*/
 }
 
 void lerArq(char *nome, char tipo)
@@ -86,19 +86,35 @@ void lerArq(char *nome, char tipo)
                 push(&f, x);
                 free(x);
             }
-            criarArvore(&f);
             j = 0;
-            for(;j <tamanho;j++)
+            while(tamanho >= 2)
             {
-                NoArvore* x = pop(f);
-                printf("%c\n", (unsigned char)x->letra);
-                printf("%d\n", (int)x->freq);
+                NoArvore* no = (NoArvore*)malloc(sizeof(NoArvore));
+                no->esq = pop(f);
+                no->dir = pop(f);
+                no->freq = no->dir->freq + no->esq->freq;
+                no->letra = NULL;
+                push(&f, no);
+                free(no);
+                tamanho--;
             }
-            //percorrer(&f);
+            percorrerArvore(f->dado);
+            //percorrer(f);
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
         }
     }
 
+}
+
+
+void percorrerArvore(NoArvore* a)
+{
+    if(a == NULL)
+        return;
+    percorrerArvore(a->esq);
+    printf("%c\n", a->letra);
+    printf("%d\n", a->freq);
+    percorrerArvore(a->dir);
 }
