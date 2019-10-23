@@ -50,6 +50,7 @@ void percorrer(NoFila *f)
     {
         printf("%c\n", n->dado->letra);
         printf("%d\n", n->dado->freq);
+        putchar('\n');
         n = n->prox;
     }
 
