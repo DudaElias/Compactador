@@ -1,5 +1,12 @@
 #include <stdio.h>
 #include "Fila.h"
+
+typedef struct Tabela{
+    unsigned char letra;
+    int codigo;
+    //ponteiro do ponteiro
+}Tabela;
+
 FILE *arq;
 unsigned char *vetorDeLetras;
 int tamanho;

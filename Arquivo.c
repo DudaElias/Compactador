@@ -99,7 +99,8 @@ void lerArq(char *nome, char tipo)
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
-
+            //ler o arquivo
+            //
         }
     }
 
@@ -108,7 +109,7 @@ void lerArq(char *nome, char tipo)
 void criarTabela(NoArvore* a, char codigo[], int topo)
 {
     int i;
-    //criar variavel para retornar a tabela
+
     if(a->esq)
     {
         codigo[topo] = 0;
@@ -144,12 +145,12 @@ void percorrerArvore(NoArvore* a)
     percorrerArvore(a->dir);
 }
 
-void criarArquivo(char* nome)
+void criarArquivo(char* nome, Tabela* tab)
 {
     FILE* fil;
     unsigned int qtdBytes;
     char* x = strtok(nome, ".");
-    fil = fopen(strcat(x, ".dodao"),"wb");
+    fil = fopen(strcat(x, ".dao"),"wb");
     if(fil == NULL)
     {
         printf("Erro na abertura do arquivo!");
@@ -157,6 +158,10 @@ void criarArquivo(char* nome)
     }
     int j = 0;
     for()
+
+
+
+
   //usando fprintf para armazenar a string no arquivo
   fprintf(fil, "%s", "batata");
 
