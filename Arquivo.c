@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Fila.h"
-
+#include <string.h>
 
 FILE *arq;
 unsigned char *vetorDeLetras;
 int *frequencias;
 int tamanho;
-
+char codigos[256][256];
 
 void criarArvore(NoFila* f)
 {
@@ -94,6 +94,7 @@ void lerArq(char *nome, char tipo)
             char codigo[200];
             int topo = 0;
             criarTabela(f->dado, codigo, topo);
+            criarArquivo(nome);
             //percorrer(f);
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
@@ -123,9 +124,14 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         i = 0;
         printf("%c\n", a->letra);
         for(; i< topo; i++)
+        {
             printf("%d", codigo[i]);
+
+        codigos[][i] = codigo[i];
+        }
         printf("\n");
     }
+
 }
 
 void percorrerArvore(NoArvore* a)
@@ -138,13 +144,24 @@ void percorrerArvore(NoArvore* a)
     percorrerArvore(a->dir);
 }
 
-void criarArquivo(char codigo[])
+void criarArquivo(char* nome)
 {
+    FILE* fil;
     unsigned int qtdBytes;
-    unsigned int qtdChar;
+    char* x = strtok(nome, ".");
+    fil = fopen(strcat(x, ".dodao"),"wb");
+    if(fil == NULL)
+    {
+        printf("Erro na abertura do arquivo!");
+        return 1;
+    }
+    int j = 0;
+    for()
+  //usando fprintf para armazenar a string no arquivo
+  fprintf(fil, "%s", "batata");
 
-    FILE *Fil;
-    fopen(codigo,"wb");
-    fputs(codigo,Fil);
-    printf();
+  //usando fclose para fechar o arquivo
+  fclose(fil);
+
+  printf("Dados gravados com sucesso!");
 }
