@@ -4,6 +4,7 @@
 typedef struct Tabela{
     unsigned char letra;
     char* codigo;
+    int tamanho;
     struct Tabela* prox;
     //ponteiro do ponteiro
 }Tabela;

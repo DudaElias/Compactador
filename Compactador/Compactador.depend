@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1572039732 source:c:\users\u18190\documents\github\compactador\arquivo.c
+1572044550 source:c:\users\u18190\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
 	"Fila.h"
 	<string.h>
 
-1572038858 c:\users\u18190\documents\github\compactador\arquivo.h
+1572043539 c:\users\u18190\documents\github\compactador\arquivo.h
 	<stdio.h>
 	"Fila.h"
 
