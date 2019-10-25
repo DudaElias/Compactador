@@ -92,8 +92,8 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvore(f);
             }
-            char* x = strtok(nome, ".");
-            arqSaida = fopen(strcat(x, ".dao"),"wb");
+
+            arqSaida = fopen(strcat(nome, ".dao"),"wb");
             if(arqSaida == NULL)
             {
                 printf("Erro na abertura do arquivo!");
@@ -199,7 +199,7 @@ void percorrerArvore(NoArvore* a)
     percorrerArvore(a->dir);
 }
 
-void criarArquivo(char* nome)
+/*void criarArquivo(char* nome)
 {
     FILE* fil;
     unsigned int qtdBytes;
@@ -210,7 +210,7 @@ void criarArquivo(char* nome)
         printf("Erro na abertura do arquivo!");
         return 1;
     }
-    percorrerArvore(f->dado);
+    percorrerArvore(->dado);
     char y;
     byte inserir;
     int i = 0;
@@ -222,4 +222,4 @@ void criarArquivo(char* nome)
         tamanho++;
     }
 
-}
+}*/
