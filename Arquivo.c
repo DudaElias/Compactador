@@ -73,7 +73,8 @@ void lerArq(char *nome, char tipo)
                 }
 
             }
-            fclose(arq);
+
+            rewind(arq);
             int j = 0;
             for(;j < tamanho;j++)
             {
@@ -91,17 +92,6 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvore(f);
             }
-
-            /*char codigo[200];
-            int topo = 0;
-            codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
-            codigos->prox = NULL;
-            codigos->letra = NULL;
-            codigos->codigo = NULL;
-            inicio = (Tabela*)malloc(tamanho*sizeof(Tabela));
-            inicio->prox = codigos;
-            inicio->letra = NULL;
-            inicio->codigo = NULL;*/
             char* x = strtok(nome, ".");
             arqSaida = fopen(strcat(x, ".dao"),"wb");
             if(arqSaida == NULL)
@@ -110,18 +100,31 @@ void lerArq(char *nome, char tipo)
                 return 1;
             }
             percorrerArvore(f->dado);
-            //criarTabela(f->dado, codigo, topo);
-
             fclose(arqSaida);
-
-          //printf("Dados gravados com sucesso!");
-            //criarArquivo(nome);
-            //percorrer(f);*/
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
-            //ler o arquivo
-            //
+            int v;
+            while(fread(&aux, sizeof(char), 1, arq))
+            {
+                NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
+                fread(&v, sizeof(int), 1, arq);
+                x->freq = v;
+                x->letra = (unsigned char)aux;
+                x->dir = NULL;
+                x->esq = NULL;
+                x->vazio = 0;
+                push(&f, x);
+                free(x);
+
+            }
+            fclose(arq);
+
+            while(tamanho >= 2)
+            {
+                criarArvore(f);
+            }
+
         }
     }
 
@@ -133,12 +136,12 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
 
     if(a->esq)
     {
-        codigo[topo] = '0';
+        codigo[topo] = 0;
         criarTabela(a->esq, codigo, topo+1);
     }
     if(a->dir)
     {
-        codigo[topo] = '1';
+        codigo[topo] = 1;
         criarTabela(a->dir, codigo, topo+1);
     }
     if(a->esq == NULL && a->dir == NULL)
@@ -182,7 +185,14 @@ void percorrerArvore(NoArvore* a)
     Letra t;
     t.letra = a->letra;
     t.freq = a->freq;
-    fwrite(&t, sizeof(Letra), 1, arqSaida);
+    int j = 0;
+    char v;
+    fwrite(&a->letra, sizeof(char), 1, arqSaida);
+    for(;j<4;j++)
+    {
+        v = a->freq >> j * 8;
+        fwrite(&v, sizeof(char),1, arqSaida);
+    }
     //fprintf(arqSaida, "%c %d", (unsigned char)a->letra, (int)a->freq);
     printf("%c\t", a->letra);
     printf("%d\n\n", a->freq);
@@ -200,21 +210,16 @@ void criarArquivo(char* nome)
         printf("Erro na abertura do arquivo!");
         return 1;
     }
-    int j = 0;
-    inicio = inicio->prox;
-    for(;j<tamanho; j++)
+    percorrerArvore(f->dado);
+    char y;
+    byte inserir;
+    int i = 0;
+    while(fread(&y, sizeof(char), 1, arq))
     {
-        while(inicio->prox != NULL)
-        {
-            printf("%s", inicio->codigo);
-            inicio = inicio->prox;
-        }
+        for(;codigos->prox != NULL && codigos->letra != y; codigos = codigos->prox)
+        {}
+        inserir = inserir | (1 << i * 8);
+        tamanho++;
     }
-  //usando fprintf para armazenar a string no arquivo
-  fprintf(fil, "%s", "batata");
 
-  //usando fclose para fechar o arquivo
-  fclose(fil);
-
-  printf("Dados gravados com sucesso!");
 }
