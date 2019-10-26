@@ -93,6 +93,14 @@ void lerArq(char *nome, char tipo)
                 criarArvore(f);
             }
 
+
+            arqSaida = fopen(strcat(nome, ".dao"),"wb");
+            if(arqSaida == NULL)
+            {
+                printf("Erro na abertura do arquivo!");
+                return 1;
+            }
+
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->letra = NULL;
@@ -104,26 +112,30 @@ void lerArq(char *nome, char tipo)
             inicio->prox = codigos;
             inicio->letra = NULL;
             inicio->codigo = NULL;
-            arqSaida = fopen(strcat(nome, ".dao"),"wb");
-            if(arqSaida == NULL)
-            {
-                printf("Erro na abertura do arquivo!");
-                return 1;
-            }
-            percorrerArvore(f->dado);
             while(fread(&aux, sizeof(char), 1, arq))
             {
                 while(codigos->letra != aux)
                     codigos = codigos->prox;
                 if(codigos->letra == aux)
                 {
-                    int j = 0;
-                    char v;
-                    for(;j<codigos->tamanho;j++)
+                    int tamanhoCodigosEmByte = 0;
+                    char* falta;
+                    char byte;
+                    char*aux;
+                    while(tamanhoCodigosEmByte != 8)
                     {
-                        v =  codigos->codigo[j] >> j * 8;
-                        fwrite(&v, sizeof(char),1, arqSaida);
+                        if(codigos->tamanho > 8)
+                        {
+                            if(falta[0] != NULL)
+                                strcat()
+                            strncpy(&byte, codigos->codigo, 8 - tamanhoCodigosEmByte);
+                            memcpy(aux, &codigos->codigo[codigos->tamanho - (8-tamanhoCodigosEmByte)], sizeof(codigos->tamanho - (8-tamanhoCodigosEmByte)));
+                            strcat(falta, aux);
+                            fwrite(&byte, sizeof(char), 1, arqSaida);
+                        }
+                        else if()
                     }
+                    free(falta);
                 }
                 codigos = inicio;
             }
@@ -164,10 +176,11 @@ void lerArq(char *nome, char tipo)
             while(fread(&aux, sizeof(char), 1, arq))
             {
                 char v;
+                int j=0;
                 for(;j<codigos->tamanho;j++)
                 {
-                    v =  aux >> j * 8;
-                    fread(&v, sizeof(char),1, arqSaida);
+                    v =  aux << j * 8;
+                    fwrite(&v, sizeof(char),1, arqSaida);
                 }
                 if(codigos->letra == aux)
                 {
@@ -179,7 +192,7 @@ void lerArq(char *nome, char tipo)
                         fwrite(&v, sizeof(char),1, arqSaida);
                     }
                 }
-                while(codigos->cod != aux)
+                while(codigos->codigo != aux)
                     codigos = codigos->prox;
                 codigos = inicio;
             }
@@ -199,12 +212,12 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
 
     if(a->esq)
     {
-        codigo[topo] = 0;
+        codigo[topo] = '0';
         criarTabela(a->esq, codigo, topo+1);
     }
     if(a->dir)
     {
-        codigo[topo] = 1;
+        codigo[topo] = '1';
         criarTabela(a->dir, codigo, topo+1);
     }
     if(a->esq == NULL && a->dir == NULL)
@@ -215,7 +228,13 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         for(; i< topo; i++)
         {
             codigoReal[i] = codigo[i];
+
+            printf("%c", codigoReal[i]);
         }
+        printf("%c\n", a->letra);
+
+        fwrite(&a->letra, sizeof(char), 1, arqSaida);
+        fwrite(codigoReal, sizeof(char), topo, arqSaida);
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
         t->codigo = codigoReal;
         t->letra =  a->letra;
@@ -259,9 +278,6 @@ void percorrerArvore(NoArvore* a)
         v = a->freq >> j * 8;
         fwrite(&v, sizeof(char),1, arqSaida);
     }
-    //fprintf(arqSaida, "%c %d", (unsigned char)a->letra, (int)a->freq);
-    /*printf("%c\t", a->letra);
-    printf("%d\n\n", a->freq);*/
     percorrerArvore(a->dir);
 }
 
