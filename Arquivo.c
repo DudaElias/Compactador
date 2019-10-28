@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "Fila.h"
 #include <string.h>
+#include <math.h>
 
 FILE *arq;
 FILE *arqSaida;
@@ -11,7 +12,6 @@ int *frequencias;
 int tamanho;
 Tabela* codigos;
 Tabela* inicio;
-
 void criarArvore(NoFila* f)
 {
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
@@ -100,7 +100,7 @@ void lerArq(char *nome, char tipo)
                 printf("Erro na abertura do arquivo!");
                 return 1;
             }
-
+            fwrite(" ", sizeof(char), 1, arqSaida);
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->letra = NULL;
@@ -111,6 +111,11 @@ void lerArq(char *nome, char tipo)
             inicio = (Tabela*)malloc(tamanho*sizeof(Tabela));
             inicio->prox = codigos;
             inicio->letra = NULL;
+            int tamanhoCodigoEmByte = 8;
+            char* falta;
+            unsigned char byte = 0;
+            char aux;
+            int codigoAtual = 0;
             inicio->codigo = NULL;
             while(fread(&aux, sizeof(char), 1, arq))
             {
@@ -118,28 +123,58 @@ void lerArq(char *nome, char tipo)
                     codigos = codigos->prox;
                 if(codigos->letra == aux)
                 {
-                    int tamanhoCodigosEmByte = 0;
-                    char* falta;
-                    char byte;
-                    char*aux;
-                    while(tamanhoCodigosEmByte != 8)
+                    int v;
+                    if(tamanhoCodigoEmByte != 0)
                     {
-                        if(codigos->tamanho > 8)
+                        int i = 0;
+                        for(;i<codigos->tamanho; i++)
                         {
-                            if(falta[0] != NULL)
-                                strcat()
-                            strncpy(&byte, codigos->codigo, 8 - tamanhoCodigosEmByte);
-                            memcpy(aux, &codigos->codigo[codigos->tamanho - (8-tamanhoCodigosEmByte)], sizeof(codigos->tamanho - (8-tamanhoCodigosEmByte)));
-                            strcat(falta, aux);
-                            fwrite(&byte, sizeof(char), 1, arqSaida);
+                            if(codigos->codigo[i] == '1')
+                                codigoAtual += pow(2,(codigos->tamanho-1 - i));
                         }
-                        else if()
+                        if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
+                        {
+                            byte = byte << codigos->tamanho;
+                            byte += codigoAtual;
+                            tamanhoCodigoEmByte -=codigos->tamanho;
+                            codigoAtual = 0;
+                        }
+                        else
+                        {
+                            byte = byte << tamanhoCodigoEmByte;
+                            byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
+                            int t = codigos->tamanho - tamanhoCodigoEmByte;
+                            fwrite(&byte, sizeof(char),1, arqSaida);
+                            byte = 0;
+                            byte += codigoAtual << codigos->tamanho + tamanhoCodigoEmByte;
+                            byte = byte >> codigos->tamanho + tamanhoCodigoEmByte;
+                            tamanhoCodigoEmByte = 8;
+                            tamanhoCodigoEmByte -=t;
+                            codigoAtual = 0;
+                        }
                     }
-                    free(falta);
+                    if(tamanhoCodigoEmByte == 0)
+                    {
+                        fwrite(&byte, sizeof(char),1,arqSaida);
+                        byte = 0;
+                        tamanhoCodigoEmByte = 8;
+                    }
                 }
                 codigos = inicio;
             }
+            if(tamanhoCodigoEmByte != 8)
+            {
+                byte = byte << tamanhoCodigoEmByte;
+                fwrite(&byte, sizeof(char), 1, arqSaida);
+                fseek(arqSaida, 0, SEEK_SET);
+                fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
+            }
+
+            free(falta);
             fclose(arqSaida);
+            fclose(arq);
+
+
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
@@ -157,53 +192,14 @@ void lerArq(char *nome, char tipo)
                 free(x);
 
             }
+            fclose(arq);
+
             while(tamanho >= 2)
             {
                 criarArvore(f);
             }
-            codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
-            codigos->prox = NULL;
-            codigos->letra = NULL;
-            codigos->codigo = NULL;
-            int topo = 0;
-            char codigo[256];
-            criarTabela(f->dado, codigo, topo);
-            inicio = (Tabela*)malloc(tamanho*sizeof(Tabela));
-            inicio->prox = codigos;
-            inicio->letra = NULL;
-            inicio->codigo = NULL;
-            criarTabela(f->dado, codigo, topo);
-            while(fread(&aux, sizeof(char), 1, arq))
-            {
-                char v;
-                int j=0;
-                for(;j<codigos->tamanho;j++)
-                {
-                    v =  aux << j * 8;
-                    fwrite(&v, sizeof(char),1, arqSaida);
-                }
-                if(codigos->letra == aux)
-                {
-                    int j = 0;
-                    char v;
-                    for(;j<codigos->tamanho;j++)
-                    {
-                        v =  codigos->codigo[j] >> j * 8;
-                        fwrite(&v, sizeof(char),1, arqSaida);
-                    }
-                }
-                while(codigos->codigo != aux)
-                    codigos = codigos->prox;
-                codigos = inicio;
-            }
-
-            fclose(arq);
-
-
-
         }
     }
-
 }
 
 void criarTabela(NoArvore* a, char codigo[], int topo)
@@ -228,11 +224,7 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         for(; i< topo; i++)
         {
             codigoReal[i] = codigo[i];
-
-            printf("%c", codigoReal[i]);
         }
-        printf("%c\n", a->letra);
-
         fwrite(&a->letra, sizeof(char), 1, arqSaida);
         fwrite(codigoReal, sizeof(char), topo, arqSaida);
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
@@ -257,7 +249,6 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
             t->prox = ta->prox;
             ta->prox = t;
         }
-        free(codigoReal);
     }
 
 }
