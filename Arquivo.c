@@ -31,7 +31,7 @@ void criarArvoreD(char letra[], int posicao[]){
     int i;
     for(i=0;letra!=NULL;i++){
         novoNo->letra = letra[i];
-        for(;;){
+        for(;;){ //enquanto não terminou a qtd de 0 e 1
             //separar pra ler um numero de cada vez
             if(posicao[i]==1){
                     novoNo = novoNo->esq;
@@ -151,7 +151,7 @@ void lerArq(char *nome, char tipo)
                         }
                         if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
                         {
-                            byte = byte << codigos->tamanho;
+                            byte = byte <5 < codigos->tamanho;
                             byte += codigoAtual;
                             tamanhoCodigoEmByte -=codigos->tamanho;
                             codigoAtual = 0;
@@ -172,7 +172,7 @@ void lerArq(char *nome, char tipo)
                     }
                     if(tamanhoCodigoEmByte == 0)
                     {
-                        fwrite(&byte, sizeof(char),1,arqSaida);
+                        //fwrite(&byte, sizeof(chacriarArvoreD(char letra[], int posicao[]){r),1,arqSaida);
                         byte = 0;
                         tamanhoCodigoEmByte = 8;
                     }
@@ -196,10 +196,13 @@ void lerArq(char *nome, char tipo)
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
             int lm;
-            int posicao[];
-            int letra[];
+            int posicao[256];
+            int letra[256];
+            int tamanhoCodigoEmByte = 8;
+
             while(fread(&aux, sizeof(char),1, arq)){
-                criarArvoreD(letra, posicao);
+                criarArvoreD(letra, aux);
+
                 //pegar o caracter e transformar em número
                 //ler a letra e o número e montar a árvore
 
