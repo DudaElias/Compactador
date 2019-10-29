@@ -12,6 +12,7 @@ int *frequencias;
 int tamanho;
 Tabela* codigos;
 Tabela* inicio;
+
 void criarArvore(NoFila* f)
 {
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
@@ -23,6 +24,22 @@ void criarArvore(NoFila* f)
     push(&f, novoNo);
     free(novoNo);
     tamanho--;
+}
+
+void criarArvoreD(char letra[], int posicao[]){
+    NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
+    int i;
+    for(i=0;letra!=NULL;i++){
+        novoNo->letra = letra[i];
+        for(;;){
+            //separar pra ler um numero de cada vez
+            if(posicao[i]==1){
+                    novoNo = novoNo->esq;
+            }
+            else
+            novoNo=novoNo->dir;
+        }
+    }
 }
 
 void lerArq(char *nome, char tipo)
@@ -178,6 +195,16 @@ void lerArq(char *nome, char tipo)
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
+            int lm;
+            int posicao[];
+            int letra[];
+            while(fread(&aux, sizeof(char),1, arq)){
+                criarArvoreD(letra, posicao);
+                //pegar o caracter e transformar em número
+                //ler a letra e o número e montar a árvore
+
+            }
+            /*
             int v;
             while(fread(&aux, sizeof(char), 1, arq))
             {
@@ -197,7 +224,7 @@ void lerArq(char *nome, char tipo)
             while(tamanho >= 2)
             {
                 criarArvore(f);
-            }
+            }*/
         }
     }
 }

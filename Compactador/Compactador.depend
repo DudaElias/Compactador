@@ -81,26 +81,27 @@
 	"../Arquivo.h"
 	"../Fila.h"
 
-1571939536 source:c:\users\u18343\documents\github\compactador\arquivo.c
+1572345548 source:c:\users\u18343\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
 	"Fila.h"
 	<string.h>
+	<math.h>
 
-1571939536 c:\users\u18343\documents\github\compactador\arquivo.h
+1572345548 c:\users\u18343\documents\github\compactador\arquivo.h
 	<stdio.h>
 	"Fila.h"
 
-1571939537 c:\users\u18343\documents\github\compactador\fila.h
+1571826800 c:\users\u18343\documents\github\compactador\fila.h
 
-1571939536 source:c:\users\u18343\documents\github\compactador\arvore.c
+1571740232 source:c:\users\u18343\documents\github\compactador\arvore.c
 
-1571939537 source:c:\users\u18343\documents\github\compactador\fila.c
+1572012876 source:c:\users\u18343\documents\github\compactador\fila.c
 	"Fila.h"
 	<stdlib.h>
 
-1571939537 source:c:\users\u18343\documents\github\compactador\compactador\main.c
+1571740232 source:c:\users\u18343\documents\github\compactador\compactador\main.c
 	<stdio.h>
 	"../Arquivo.h"
 	"../Fila.h"
