@@ -82,7 +82,7 @@
 	"../Arquivo.h"
 	"../Fila.h"
 
-1572345548 source:c:\users\u18343\documents\github\compactador\arquivo.c
+1572447511 source:c:\users\u18343\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
@@ -90,7 +90,7 @@
 	<string.h>
 	<math.h>
 
-1572345548 c:\users\u18343\documents\github\compactador\arquivo.h
+1572447472 c:\users\u18343\documents\github\compactador\arquivo.h
 	<stdio.h>
 	"Fila.h"
 
