@@ -31,7 +31,7 @@ void criarArvoreD(char letra[], int posicao[]){
     int i;
     for(i=0;letra!=NULL;i++){
         novoNo->letra = letra[i];
-        for(;;){ //enquanto não terminou a qtd de 0 e 1
+        for(;;){ //enquanto nï¿½o terminou a qtd de 0 e 1
             //separar pra ler um numero de cada vez
             if(posicao[i]==1){
                     novoNo = novoNo->esq;
@@ -46,7 +46,7 @@ void lerArq(char *nome, char tipo)
 {
     if( (arq = fopen(nome, "rb")) == NULL)
     {
-        printf("Não foi possivel abrir o arquivo, verifique sua existência e o caminho");
+        printf("Nï¿½o foi possivel abrir o arquivo, verifique sua existï¿½ncia e o caminho");
     }
     else
     {
@@ -109,8 +109,6 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvore(f);
             }
-
-
             arqSaida = fopen(strcat(nome, ".dao"),"wb");
             if(arqSaida == NULL)
             {
@@ -128,15 +126,16 @@ void lerArq(char *nome, char tipo)
             inicio = (Tabela*)malloc(tamanho*sizeof(Tabela));
             inicio->prox = codigos;
             inicio->letra = NULL;
+
             int tamanhoCodigoEmByte = 8;
             char* falta;
             unsigned char byte = 0;
-            char aux;
+            unsigned char aux;
             int codigoAtual = 0;
             inicio->codigo = NULL;
             while(fread(&aux, sizeof(char), 1, arq))
             {
-                while(codigos->letra != aux)
+                while(codigos->letra != aux && codigos != NULL)
                     codigos = codigos->prox;
                 if(codigos->letra == aux)
                 {
@@ -199,12 +198,11 @@ void lerArq(char *nome, char tipo)
             int posicao[256];
             int letra[256];
             int tamanhoCodigoEmByte = 8;
-
             while(fread(&aux, sizeof(char),1, arq)){
                 criarArvoreD(letra, aux);
 
-                //pegar o caracter e transformar em número
-                //ler a letra e o número e montar a árvore
+                //pegar o caracter e transformar em nï¿½mero
+                //ler a letra e o nï¿½mero e montar a ï¿½rvore
 
             }
             /*
@@ -255,8 +253,54 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         {
             codigoReal[i] = codigo[i];
         }
+
         fwrite(&a->letra, sizeof(char), 1, arqSaida);
-        fwrite(codigoReal, sizeof(char), topo, arqSaida);
+        int tamanhoCodigoEmByte = 0;
+        int codigoAtual;
+        unsigned char byte = NULL;
+        if(tamanhoCodigoEmByte != 0)
+        {
+            int i = 0;
+            for(;i<topo; i++)
+            {
+                if(codigoReal[i] == '1')
+                    codigoAtual += pow(2,(topo-1 - i));
+            }
+            if(tamanhoCodigoEmByte - topo >= 0)
+            {
+                byte = byte << topo;
+                byte += codigoAtual;
+                tamanhoCodigoEmByte -=topo;
+                codigoAtual = 0;
+            }
+            else
+            {
+                byte = byte << tamanhoCodigoEmByte;
+                byte += codigoAtual >>(topo - tamanhoCodigoEmByte);
+                int t =topo- tamanhoCodigoEmByte;
+                fwrite(&byte, sizeof(char),1, arqSaida);
+                byte = 0;
+                byte += codigoAtual << topo + tamanhoCodigoEmByte;
+                byte = byte >> topo + tamanhoCodigoEmByte;
+                tamanhoCodigoEmByte = 8;
+                tamanhoCodigoEmByte -=t;
+                codigoAtual = 0;
+            }
+        }
+        if(tamanhoCodigoEmByte == 0)
+        {
+            fwrite(&byte, sizeof(char),1,arqSaida);
+            byte = 0;
+            tamanhoCodigoEmByte = 8;
+        }
+        if(tamanhoCodigoEmByte != 8)
+        {
+            byte = byte << tamanhoCodigoEmByte;
+            byte += '\0';
+            fwrite(&byte, sizeof(char), 1, arqSaida);
+        }
+
+
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
         t->codigo = codigoReal;
         t->letra =  a->letra;
