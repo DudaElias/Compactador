@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1572381169 source:c:\users\u18190\documents\github\compactador\arquivo.c
+1572537396 source:c:\users\u18190\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
@@ -7,102 +7,19 @@
 	<string.h>
 	<math.h>
 
-1572379034 c:\users\u18190\documents\github\compactador\arquivo.h
+1572536895 c:\users\u18190\documents\github\compactador\arquivo.h
 	<stdio.h>
 	"Fila.h"
 
-1572379034 c:\users\u18190\documents\github\compactador\fila.h
+1572536763 c:\users\u18190\documents\github\compactador\fila.h
 
-1572379034 source:c:\users\u18190\documents\github\compactador\arvore.c
+1572535716 source:c:\users\u18190\documents\github\compactador\arvore.c
 
-1571662042 source:c:\users\u18190\documents\github\compactador\compactador.c
-	<stdio.h>
-	"Arquivo.c"
-	"Fila.h"
-
-1571663723 c:\users\u18190\documents\github\compactador\arquivo.c
-	"Arquivo.h"
-	<stdio.h>
-	<stdlib.h>
-	"Fila.h"
-
-1572379034 source:c:\users\u18190\documents\github\compactador\compactador\main.c
-	<stdio.h>
-	"../Arquivo.h"
-	"../Fila.h"
-
-1572379034 source:c:\users\u18190\documents\github\compactador\fila.c
+1572536714 source:c:\users\u18190\documents\github\compactador\fila.c
 	"Fila.h"
 	<stdlib.h>
 
-1571678822 source:c:\users\u18188\documents\github\compactador\arquivo.c
-	"Arquivo.h"
-	<stdio.h>
-	<stdlib.h>
-	"Fila.h"
-
-1571675366 c:\users\u18188\documents\github\compactador\arquivo.h
-	<stdio.h>
-
-1571679355 c:\users\u18188\documents\github\compactador\fila.h
-
-1571675366 source:c:\users\u18188\documents\github\compactador\arvore.c
-
-1571679409 source:c:\users\u18188\documents\github\compactador\fila.c
-	"Fila.h"
-	<stdlib.h>
-
-1571675366 source:c:\users\u18188\documents\github\compactador\compactador\main.c
-	<stdio.h>
-	"../Arquivo.h"
-	"../Fila.h"
-
-1572489097 source:d:\documentos\github\compactador\arquivo.c
-	"Arquivo.h"
-	<stdio.h>
-	<stdlib.h>
-	"Fila.h"
-	<string.h>
-	<math.h>
-
-1572481212 d:\documentos\github\compactador\arquivo.h
-	<stdio.h>
-	"Fila.h"
-
-1571780339 d:\documentos\github\compactador\fila.h
-
-1571445338 source:d:\documentos\github\compactador\arvore.c
-
-1571877193 source:d:\documentos\github\compactador\fila.c
-	"Fila.h"
-	<stdlib.h>
-
-1571695741 source:d:\documentos\github\compactador\compactador\main.c
-	<stdio.h>
-	"../Arquivo.h"
-	"../Fila.h"
-
-1572522767 source:c:\users\u18343\documents\github\compactador\arquivo.c
-	"Arquivo.h"
-	<stdio.h>
-	<stdlib.h>
-	"Fila.h"
-	<string.h>
-	<math.h>
-
-1572519527 c:\users\u18343\documents\github\compactador\arquivo.h
-	<stdio.h>
-	"Fila.h"
-
-1571826800 c:\users\u18343\documents\github\compactador\fila.h
-
-1571740232 source:c:\users\u18343\documents\github\compactador\arvore.c
-
-1572012876 source:c:\users\u18343\documents\github\compactador\fila.c
-	"Fila.h"
-	<stdlib.h>
-
-1571740232 source:c:\users\u18343\documents\github\compactador\compactador\main.c
+1572535716 source:c:\users\u18190\documents\github\compactador\compactador\main.c
 	<stdio.h>
 	"../Arquivo.h"
 	"../Fila.h"

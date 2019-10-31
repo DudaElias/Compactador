@@ -21,6 +21,7 @@ int tamanho;
 Tabela *codigos;
 extern void lerArq(char *nome, char tipo);
 extern void percorrerArvore(NoArvore* a);
+extern void percorrerFila(NoFila* f);
 extern void criarArvore(NoFila* f);
 extern void criarTabela(NoArvore* a, char codigo[], int topo);
 extern void criarArquivo(char* nome);

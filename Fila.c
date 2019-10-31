@@ -43,18 +43,7 @@ void push(NoFila **raiz, NoArvore *dado)
 }
 
 
-void percorrer(NoFila *f)
-{
-    NoFila* n = f;
-    while(n != NULL)
-    {
-        printf("%c\n", n->dado->letra);
-        printf("%d\n", n->dado->freq);
-        putchar('\n');
-        n = n->prox;
-    }
 
-}
 
 NoArvore* pop(NoFila *f)
 {

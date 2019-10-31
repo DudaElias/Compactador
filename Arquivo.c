@@ -25,7 +25,30 @@ void criarArvore(NoFila* f)
     free(novoNo);
     tamanho = tamanho - 1;
 }
+void percorrerFila(NoFila *f)
+{
+    NoFila* n = f;
+    while(n != NULL)
+    {
+        //printf("%c\n", n->dado->letra);
+        //printf("%d\n", n->dado->freq);
+        putchar('\n');
+        if(n->dado->letra != NULL)
+        {
+            fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
+            unsigned char byte1 = (n->dado->freq & 255);
+            unsigned char byte2 = ((n->dado->freq>>8) & 255);
+            unsigned char byte3 = ((n->dado->freq>>16) & 255);
+            unsigned char byte4 = ((n->dado->freq>>31) & 255);
+            fwrite(&byte1, sizeof(char), 1, arqSaida);
+            fwrite(&byte2, sizeof(char), 1, arqSaida);
+            fwrite(&byte3, sizeof(char), 1, arqSaida);
+            fwrite(&byte4, sizeof(char), 1, arqSaida);
+        }
+        n = n->prox;
+    }
 
+}
 void criarArvoreD(NoFila* raiz){
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
     novoNo->esq = pop(raiz);
@@ -110,6 +133,7 @@ void lerArq(char *nome, char tipo)
             fwrite(" ", sizeof(char), 1, arqSaida);
             fwrite(&tamanho, sizeof(char), 1, arqSaida);
             printf("%d", tamanho);
+            percorrerFila(f);
             while(tamanho >= 2)
             {
                 criarArvore(f);
@@ -218,9 +242,83 @@ void lerArq(char *nome, char tipo)
             }
             while(tamanho >= 2)
             {
-                                                                  criarArvoreD(f);
+                criarArvoreD(f);
             }
-            percorrerArvoreD(f->dado);
+            //percorrerArvoreD(f->dado);
+            codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
+            codigos->prox = NULL;
+            codigos->letra = NULL;
+            codigos->codigo = NULL;
+            int topo = 0;
+            char codigo[256];
+            criarTabela(f->dado, codigo, topo);
+            inicio = (Tabela*)malloc(tamanho*sizeof(Tabela));
+            inicio->prox = codigos;
+            inicio->letra = NULL;
+
+            int tamanhoCodigoEmByte = 8;
+            char* falta;
+            unsigned char byte = 0;
+            unsigned char aux;
+            int codigoAtual = 0;
+            inicio->codigo = NULL;
+            while(fread(&aux, sizeof(char), 1, arq))
+            {
+                while(codigos->letra != aux && codigos != NULL)
+                    codigos = codigos->prox;
+                if(codigos->letra == aux)
+                {
+                    int v;
+                    if(tamanhoCodigoEmByte != 0)
+                    {
+                        int i = 0;
+                        for(;i<codigos->tamanho; i++)
+                        {
+                            if(codigos->codigo[i] == '1')
+                                codigoAtual += pow(2,(codigos->tamanho-1 - i));
+                        }
+                        if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
+                        {
+                            byte = byte << codigos->tamanho;
+                            byte += codigoAtual;
+                            tamanhoCodigoEmByte -=codigos->tamanho;
+                            codigoAtual = 0;
+                        }
+                        else
+                        {
+                            byte = byte << tamanhoCodigoEmByte;
+                            byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
+                            int t = codigos->tamanho - tamanhoCodigoEmByte;
+                            fwrite(&byte, sizeof(char),1, arqSaida);
+                            byte = 0;
+                            byte += codigoAtual << codigos->tamanho + tamanhoCodigoEmByte;
+                            byte = byte >> codigos->tamanho + tamanhoCodigoEmByte;
+                            tamanhoCodigoEmByte = 8;
+                            tamanhoCodigoEmByte -=t;
+                            codigoAtual = 0;
+                        }
+                    }
+                    if(tamanhoCodigoEmByte == 0)
+                    {
+                        fwrite(&byte, sizeof(char),1,arqSaida);
+                        byte = 0;
+                        tamanhoCodigoEmByte = 8;
+                    }
+                }
+                codigos = inicio;
+            }
+            if(tamanhoCodigoEmByte != 8)
+            {
+                byte = byte << tamanhoCodigoEmByte;
+                fwrite(&byte, sizeof(char), 1, arqSaida);
+                fseek(arqSaida, 0, SEEK_SET);
+                fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
+            }
+
+            free(falta);
+            fclose(arqSaida);
+            fclose(arq);
+
 
         }
     }
@@ -287,11 +385,9 @@ void percorrerArvore(NoArvore* a)
     int j = 0;
 
     char v;
-    if(a->letra != NULL)
+    /*if(a->letra != NULL)
     {
         fwrite(&a->letra, sizeof(char), 1, arqSaida);
-        fwrite(&a->freq, size
-               of(int), 1, arqSaida); ele já coisa todos os bytes
         unsigned char byte1 = (a->freq & 255);
         unsigned char byte2 = ((a->freq>>8) & 255);
         unsigned char byte3 = ((a->freq>>16) & 255);
@@ -300,20 +396,22 @@ void percorrerArvore(NoArvore* a)
         fwrite(&byte2, sizeof(char), 1, arqSaida);
         fwrite(&byte3, sizeof(char), 1, arqSaida);
         fwrite(&byte4, sizeof(char), 1, arqSaida);
-    }
+    }*/
     for(;j<4;j++)
     {
         v = a->freq >> j * 8;
         //fwrite(&v, sizeof(char),1, arqSaida);
     }
-    printf("%c\t", a->letra);//quando eu uso o << ou +
-    printf("%d\n", a->freq);
+    //printf("%c\t", a->letra);//quando eu uso o << ou +
+    //printf("%d\n", a->freq);
     percorrerArvore(a->dir);
 
 }
 
 void percorrerArvoreD(NoArvore* a)
 {
+
+
     if(a == NULL)
         return;
     percorrerArvore(a->esq);
@@ -327,8 +425,8 @@ void percorrerArvoreD(NoArvore* a)
         v = a->freq >> j * 8;
         //fwrite(&v, sizeof(char),1, arqSaida);
     }
-    printf("%c\t", a->letra);//quando eu uso o << ou +
-    printf("%d\n", a->freq);
+    //printf("%c\t", a->letra);//quando eu uso o << ou +
+    //printf("%d\n", a->freq);
     percorrerArvore(a->dir);
 
 }
