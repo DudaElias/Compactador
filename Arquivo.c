@@ -32,7 +32,7 @@ void percorrerFila(NoFila *f)
     {
         //printf("%c\n", n->dado->letra);
         //printf("%d\n", n->dado->freq);
-        putchar('\n');
+        //putchar('\n');
         if(n->dado->letra != NULL)
         {
             fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
@@ -132,7 +132,7 @@ void lerArq(char *nome, char tipo)
             }
             fwrite(" ", sizeof(char), 1, arqSaida);
             fwrite(&tamanho, sizeof(char), 1, arqSaida);
-            printf("%d", tamanho);
+            //printf("%d", tamanho);
             percorrerFila(f);
             while(tamanho >= 2)
             {
@@ -218,7 +218,6 @@ void lerArq(char *nome, char tipo)
         {
             int freq = 0;
             unsigned char letra;
-            int tamanhoCodigoEmByte = 8;
             char lixo = 0;
             int i=0;
 
@@ -262,6 +261,18 @@ void lerArq(char *nome, char tipo)
             unsigned char aux;
             int codigoAtual = 0;
             inicio->codigo = NULL;
+            char nome1[240];
+            int tamanhoNome = strlen(nome);
+               memset(nome1, '\0', sizeof(nome1));
+
+            strncpy(nome1, nome, tamanhoNome-4);
+            printf("%s", nome1);
+            arqSaida = fopen(nome1,"wb");
+            if(arqSaida == NULL)
+            {
+                printf("Erro na abertura do arquivo!");
+                return 1;
+            }
             while(fread(&aux, sizeof(char), 1, arq))
             {
                 while(codigos->letra != aux && codigos != NULL)
@@ -320,6 +331,7 @@ void lerArq(char *nome, char tipo)
             fclose(arq);
 
 
+        */
         }
     }
 }
@@ -385,22 +397,9 @@ void percorrerArvore(NoArvore* a)
     int j = 0;
 
     char v;
-    /*if(a->letra != NULL)
-    {
-        fwrite(&a->letra, sizeof(char), 1, arqSaida);
-        unsigned char byte1 = (a->freq & 255);
-        unsigned char byte2 = ((a->freq>>8) & 255);
-        unsigned char byte3 = ((a->freq>>16) & 255);
-        unsigned char byte4 = ((a->freq>>31) & 255);
-        fwrite(&byte1, sizeof(char), 1, arqSaida);
-        fwrite(&byte2, sizeof(char), 1, arqSaida);
-        fwrite(&byte3, sizeof(char), 1, arqSaida);
-        fwrite(&byte4, sizeof(char), 1, arqSaida);
-    }*/
     for(;j<4;j++)
     {
         v = a->freq >> j * 8;
-        //fwrite(&v, sizeof(char),1, arqSaida);
     }
     //printf("%c\t", a->letra);//quando eu uso o << ou +
     //printf("%d\n", a->freq);

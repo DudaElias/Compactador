@@ -24,3 +24,28 @@
 	"../Arquivo.h"
 	"../Fila.h"
 
+1571445338 source:d:\documentos\github\compactador\arvore.c
+
+1572561975 source:d:\documentos\github\compactador\fila.c
+	"Fila.h"
+	<stdlib.h>
+
+1572561975 d:\documentos\github\compactador\fila.h
+
+1571695741 source:d:\documentos\github\compactador\compactador\main.c
+	<stdio.h>
+	"../Arquivo.h"
+	"../Fila.h"
+
+1572561975 d:\documentos\github\compactador\arquivo.h
+	<stdio.h>
+	"Fila.h"
+
+1572565759 source:d:\documentos\github\compactador\arquivo.c
+	"Arquivo.h"
+	<stdio.h>
+	<stdlib.h>
+	"Fila.h"
+	<string.h>
+	<math.h>
+
