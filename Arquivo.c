@@ -143,7 +143,7 @@ void lerArq(char *nome, char tipo)
                     if(tamanhoCodigoEmByte != 0)
                     {
                         int i = 0;
-                        for(;i<codigos->tamanho; i++)
+                        for(;i<codigos->tamanho; i++)//conertemdo p int
                         {
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
