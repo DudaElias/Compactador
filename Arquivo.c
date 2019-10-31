@@ -13,7 +13,7 @@ int tamanho;
 Tabela* codigos;
 Tabela* inicio;
 
-void criarArvore(NoFila* f, char *tam)
+void criarArvore(NoFila* f)
 {
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
     novoNo->esq = pop(f);
@@ -23,23 +23,19 @@ void criarArvore(NoFila* f, char *tam)
     novoNo->letra= NULL;
     push(&f, novoNo);
     free(novoNo);
-   *tam = *tam +1;
+    tamanho = tamanho - 1;
 }
 
-void criarArvoreD(char letra[], int posicao[]){
+void criarArvoreD(NoFila* raiz){
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
-    int i;
-    for(i=0;letra!=NULL;i++){
-        novoNo->letra = letra[i];
-        for(;;){ //enquanto n�o terminou a qtd de 0 e 1
-            //separar pra ler um numero de cada vez
-            if(posicao[i]==1){
-                    novoNo = novoNo->esq;
-            }
-            else
-            novoNo=novoNo->dir;
-        }
-    }
+    novoNo->esq = pop(raiz);
+    novoNo->dir = pop(raiz);
+    novoNo->vazio = 1;
+    novoNo->freq = novoNo->esq->freq + novoNo->dir->freq;
+    novoNo->letra= NULL;
+    push(&raiz, novoNo);
+    free(novoNo);
+    tamanho = tamanho - 1;
 }
 
 void lerArq(char *nome, char tipo)
@@ -113,9 +109,10 @@ void lerArq(char *nome, char tipo)
             }
             fwrite(" ", sizeof(char), 1, arqSaida);
             fwrite(&tamanho, sizeof(char), 1, arqSaida);
+            printf("%d", tamanho);
             while(tamanho >= 2)
             {
-                criarArvore(f, tamanho);
+                criarArvore(f);
             }
             //percorrerArvore(f->dado);
 
@@ -174,7 +171,7 @@ void lerArq(char *nome, char tipo)
                     }
                     if(tamanhoCodigoEmByte == 0)
                     {
-                        //fwrite(&byte, sizeof(chacriarArvoreD(char letra[], int posicao[]){r),1,arqSaida);
+                        fwrite(&byte, sizeof(char),1,arqSaida);
                         byte = 0;
                         tamanhoCodigoEmByte = 8;
                     }
@@ -200,16 +197,15 @@ void lerArq(char *nome, char tipo)
             int freq;
             unsigned char letra;
             int tamanhoCodigoEmByte = 8;
-            char tam = 0;
             char lixo = 0;
             int i;
 
             fread(&lixo, sizeof(char),1, arq);
-            fread(&tam, sizeof(char),1, arq);
+            fread(&tamanho, sizeof(char),1, arq);
 
             NoFila* f = create();
 
-            for(i=0;i<=tam;i++){
+            for(i=0;i<tamanho;i++){
                 fread(&letra, sizeof(char),1, arq);
                 fread(&freq, sizeof(int),1, arq);
 
@@ -222,9 +218,9 @@ void lerArq(char *nome, char tipo)
                 push(&f, x);
                 free(x);
             }
-            while(tam >= 2)
+            while(tamanho >= 2)
             {
-                criarArvore(f, &tam);
+                criarArvoreD(f);
             }
             percorrerArvore(f->dado);
 
