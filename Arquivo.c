@@ -114,7 +114,7 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvore(f);
             }
-            //percorrerArvore(f->dado);
+            percorrerArvore(f->dado);
 
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
@@ -222,7 +222,7 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvoreD(f);
             }
-            percorrerArvore(f->dado);
+            percorrerArvoreD(f->dado);
 
         }
     }
@@ -251,15 +251,7 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
             codigoReal[i] = codigo[i];
         }
 
-        fwrite(&a->letra, sizeof(char), 1, arqSaida);
-        unsigned char byte1 = (a->freq & 255);
-        unsigned char byte2 = ((a->freq>>8) & 255);
-        unsigned char byte3 = ((a->freq>>16) & 255);
-        unsigned char byte4 = ((a->freq>>31) & 255);
-        fwrite(&byte1, sizeof(char), 1, arqSaida);
-        fwrite(&byte2, sizeof(char), 1, arqSaida);
-        fwrite(&byte3, sizeof(char), 1, arqSaida);
-        fwrite(&byte4, sizeof(char), 1, arqSaida);
+
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
         t->codigo = codigoReal;
         t->letra =  a->letra;
@@ -296,7 +288,39 @@ void percorrerArvore(NoArvore* a)
     t.freq = a->freq;
     int j = 0;
     char v;
-    //fwrite(&a->letra, sizeof(char), 1, arqSaida);
+    if(a->letra != NULL)
+    {
+        fwrite(&a->letra, sizeof(char), 1, arqSaida);
+        unsigned char byte1 = (a->freq & 255);
+        unsigned char byte2 = ((a->freq>>8) & 255);
+        unsigned char byte3 = ((a->freq>>16) & 255);
+        unsigned char byte4 = ((a->freq>>31) & 255);
+        fwrite(&byte1, sizeof(char), 1, arqSaida);
+        fwrite(&byte2, sizeof(char), 1, arqSaida);
+        fwrite(&byte3, sizeof(char), 1, arqSaida);
+        fwrite(&byte4, sizeof(char), 1, arqSaida);
+    }
+    for(;j<4;j++)
+    {
+        v = a->freq >> j * 8;
+        //fwrite(&v, sizeof(char),1, arqSaida);
+    }
+    printf("%c\t", a->letra);//quando eu uso o << ou +
+    printf("%d\n", a->freq);
+    percorrerArvore(a->dir);
+
+}
+
+void percorrerArvoreD(NoArvore* a)
+{
+    if(a == NULL)
+        return;
+    percorrerArvore(a->esq);
+    Letra t;
+    t.letra = a->letra;
+    t.freq = a->freq;
+    int j = 0;
+    char v;
     for(;j<4;j++)
     {
         v = a->freq >> j * 8;
