@@ -189,23 +189,21 @@ void lerArq(char *nome, char tipo)
             free(falta);
             fclose(arqSaida);
             fclose(arq);
-
-
         }
         else if(tipo == 'd')  // LORENNA EH COM VC
         {
-            int freq;
+            int freq = 0;
             unsigned char letra;
             int tamanhoCodigoEmByte = 8;
             char lixo = 0;
-            int i;
+            int i=0;
 
             fread(&lixo, sizeof(char),1, arq);
             fread(&tamanho, sizeof(char),1, arq);
 
             NoFila* f = create();
 
-            for(i=0;i<tamanho;i++){
+            for(;i<tamanho;i++){
                 fread(&letra, sizeof(char),1, arq);
                 fread(&freq, sizeof(int),1, arq);
 
@@ -220,7 +218,7 @@ void lerArq(char *nome, char tipo)
             }
             while(tamanho >= 2)
             {
-                criarArvoreD(f);
+                                                                  criarArvoreD(f);
             }
             percorrerArvoreD(f->dado);
 
@@ -287,10 +285,13 @@ void percorrerArvore(NoArvore* a)
     t.letra = a->letra;
     t.freq = a->freq;
     int j = 0;
+
     char v;
     if(a->letra != NULL)
     {
         fwrite(&a->letra, sizeof(char), 1, arqSaida);
+        fwrite(&a->freq, size
+               of(int), 1, arqSaida); ele já coisa todos os bytes
         unsigned char byte1 = (a->freq & 255);
         unsigned char byte2 = ((a->freq>>8) & 255);
         unsigned char byte3 = ((a->freq>>16) & 255);
