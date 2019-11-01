@@ -75,8 +75,8 @@ void lerArq(char *nome, char tipo)
         int i = 0;
         int dados = 0;
         unsigned char aux;
-        vetorDeLetras = (unsigned char*)malloc(256*sizeof(char));
-        frequencias = (int*)malloc(256*sizeof(int));
+        vetorDeLetras = (unsigned char*)malloc(257*sizeof(char));
+        frequencias = (int*)malloc(257*sizeof(int));
 
         if(tipo == 'c')
         {
@@ -187,8 +187,9 @@ void lerArq(char *nome, char tipo)
                             fwrite(&byte, sizeof(char),1, arqSaida);
                             byte = 0;
                             //byte += codigoAtual << codigos->tamanho + tamanhoCodigoEmByte;
-                            byte += codigoAtual << 8 - tamanhoCodigoEmByte;
-                            byte = byte >> 8 - tamanhoCodigoEmByte;
+                            byte += codigoAtual << 8 - t;
+                            //byte = byte >> 8 - tamanhoCodigoEmByte;
+                            byte = byte >> 8 - t;
                             tamanhoCodigoEmByte = 8;
                             tamanhoCodigoEmByte -=t;
                             codigoAtual = 0;
@@ -252,7 +253,7 @@ void lerArq(char *nome, char tipo)
                memset(nome1, '\0', sizeof(nome1));
 
             strncpy(nome1, nome, tamanhoNome-4);
-            printf("%s", nome1);
+            //printf("%s", nome1);
             arqSaida = fopen(nome1,"wb");
             if(arqSaida == NULL)
             {
@@ -266,7 +267,7 @@ void lerArq(char *nome, char tipo)
             while(fread(&aux,sizeof(char),1,arq))
             {
                 qtd = 8;
-                printf("%d\n", aux);
+                //printf("%d\n", aux);
                 if(ftell(arq) == fim)
                     qtd = 8 - lixo;
                 escreverArqD(&aux, f->dado, qtd, fim);
