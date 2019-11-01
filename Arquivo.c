@@ -45,7 +45,7 @@ void percorrerFila(NoFila *f)
     {
         //printf("%c\n", n->dado->letra);
         //printf("%d\n", n->dado->freq);
-        //putchar('\n');
+        putchar('\n');
         if(n->dado->letra != NULL)
         {
             fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
@@ -132,9 +132,8 @@ void lerArq(char *nome, char tipo)
                 return 1;
             }
             fwrite(" ", sizeof(char), 1, arqSaida);
-            fwrite(&tamanho, sizeof(char), 2, arqSaida);
-
-            printf("%d", tamanho);
+            fwrite(&tamanho, sizeof(char), 1, arqSaida);
+            //printf("%d", tamanho);
             percorrerFila(f);
             while(tamanho >= 2)
             {
@@ -168,7 +167,7 @@ void lerArq(char *nome, char tipo)
                     if(tamanhoCodigoEmByte != 0)
                     {
                         int i = 0;
-                        for(;i<codigos->tamanho; i++)
+                        for(;i<codigos->tamanho; i++)//convertedo p int
                         {
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
@@ -180,14 +179,16 @@ void lerArq(char *nome, char tipo)
                             tamanhoCodigoEmByte -=codigos->tamanho;
                             codigoAtual = 0;
                         }
-                        else
+                        else//  ERRO CUIDADO
                         {
                             byte = byte << tamanhoCodigoEmByte;
                             byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
                             int t = codigos->tamanho - tamanhoCodigoEmByte;
                             fwrite(&byte, sizeof(char),1, arqSaida);
                             byte = 0;
+                            //byte += codigoAtual << codigos->tamanho + tamanhoCodigoEmByte;
                             byte += codigoAtual << 8 - t;
+                            //byte = byte >> 8 - tamanhoCodigoEmByte;
                             byte = byte >> 8 - t;
                             tamanhoCodigoEmByte = 8;
                             tamanhoCodigoEmByte -=t;
@@ -220,14 +221,12 @@ void lerArq(char *nome, char tipo)
             int freq = 0;
             unsigned char letra;
             char lixo = 0;
-            int i = 0;
-            int tamanho = 0;
+            int i=0;
             fseek(arq, 0, SEEK_END);
             long fim = ftell(arq);
             rewind(arq);
             fread(&lixo, sizeof(char),1, arq);
-            fread(&tamanho, sizeof(char),2, arq);
-            printf("%d", tamanho);
+            fread(&tamanho, sizeof(char),1, arq);
 
             NoFila* f = create();
 
@@ -248,12 +247,13 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvoreD(f);
             }
-            char nome1[240];
+            percorrerArvoreD(f->dado);
+             char nome1[240];
             int tamanhoNome = strlen(nome);
                memset(nome1, '\0', sizeof(nome1));
 
             strncpy(nome1, nome, tamanhoNome-4);
-            printf("%s", nome1);
+            //printf("%s", nome1);
             arqSaida = fopen(nome1,"wb");
             if(arqSaida == NULL)
             {
@@ -267,6 +267,7 @@ void lerArq(char *nome, char tipo)
             while(fread(&aux,sizeof(char),1,arq))
             {
                 qtd = 8;
+                //printf("%d\n", aux);
                 if(ftell(arq) == fim)
                     qtd = 8 - lixo;
                 escreverArqD(&aux, f->dado, qtd, fim);
@@ -282,7 +283,6 @@ void lerArq(char *nome, char tipo)
 
 void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim){
     unsigned char aux;
-
     int t = 7;
     NoArvore *no = (NoArvore*)malloc(sizeof(NoArvore));
     if(auxCodigo == NULL)
@@ -343,8 +343,8 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
             codigoReal[i] = codigo[i];
         }
 
-        /*printf("%c\t", a->letra);
-        printf("%s\n", codigoReal);*/
+        printf("%c\t", a->letra);
+        printf("%s\n", codigoReal);
 
 
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
@@ -401,8 +401,8 @@ void percorrerArvore(NoArvore* a)
         v = a->freq >> j * 8;
         //fwrite(&v, sizeof(char),1, arqSaida);
     }
-    /*printf("%c\t", a->letra);//quando eu uso o << ou +
-    printf("%d\n", a->freq);*/
+    printf("%c\t", a->letra);//quando eu uso o << ou +
+    printf("%d\n", a->freq);
     percorrerArvore(a->dir);
 
 }

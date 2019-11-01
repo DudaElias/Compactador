@@ -21,13 +21,11 @@ int main()
         case 1:
             printf("Digite o caminho do arquivo: ");
             scanf("%s" , &nome);
-            fflush(stdin);
             lerArq(nome, 'c');
             break;
         case 2:
             printf("Digite o caminho do arquivo: ");
             scanf("%s" , &nome);
-            fflush(stdin);
             lerArq(nome, 'd');
             break;
             break;

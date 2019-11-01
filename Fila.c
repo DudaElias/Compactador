@@ -48,9 +48,9 @@ void percorrer(NoFila *f)
     NoFila* n = f;
     while(n != NULL)
     {
-        /*printf("%c\n", n->dado->letra);
+        printf("%c\n", n->dado->letra);
         printf("%d\n", n->dado->freq);
-        putchar('\n');*/
+        putchar('\n');
         n = n->prox;
     }
 
