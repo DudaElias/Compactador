@@ -45,7 +45,7 @@ void percorrerFila(NoFila *f)
     {
         //printf("%c\n", n->dado->letra);
         //printf("%d\n", n->dado->freq);
-        putchar('\n');
+        //putchar('\n');
         if(n->dado->letra != NULL)
         {
             fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
@@ -132,14 +132,14 @@ void lerArq(char *nome, char tipo)
                 return 1;
             }
             fwrite(" ", sizeof(char), 1, arqSaida);
-            fwrite(&tamanho, sizeof(char), 1, arqSaida);
+            fwrite(&tamanho, sizeof(int), 1, arqSaida);
             //printf("%d", tamanho);
             percorrerFila(f);
             while(tamanho >= 2)
             {
                 criarArvore(f);
             }
-            percorrerArvore(f->dado);
+            //percorrerArvore(f->dado);
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->letra = NULL;
@@ -226,8 +226,8 @@ void lerArq(char *nome, char tipo)
             long fim = ftell(arq);
             rewind(arq);
             fread(&lixo, sizeof(char),1, arq);
-            fread(&tamanho, sizeof(char),1, arq);
-
+            fread(&tamanho, sizeof(int),1, arq);
+            printf("%d", tamanho);
             NoFila* f = create();
 
             for(;i<tamanho;i++){
@@ -247,7 +247,7 @@ void lerArq(char *nome, char tipo)
             {
                 criarArvoreD(f);
             }
-            percorrerArvoreD(f->dado);
+            //percorrerArvoreD(f->dado);
              char nome1[240];
             int tamanhoNome = strlen(nome);
                memset(nome1, '\0', sizeof(nome1));
@@ -343,8 +343,8 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
             codigoReal[i] = codigo[i];
         }
 
-        printf("%c\t", a->letra);
-        printf("%s\n", codigoReal);
+        //printf("%c\t", a->letra);
+        //printf("%s\n", codigoReal);
 
 
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
