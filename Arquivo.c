@@ -13,6 +13,7 @@ int tamanho;
 Tabela* codigos;
 Tabela* inicio;
 NoArvore* auxCodigo;
+int quantosBytes;
 
 void criarArvore(NoFila* f)
 {
@@ -40,14 +41,14 @@ void criarArvoreD(NoFila* raiz){
 }
 void percorrerFila(NoFila *f)
 {
+    int k = 1;
     NoFila* n = f;
     while(n != NULL)
     {
-        //printf("%c\n", n->dado->letra);
-        //printf("%d\n", n->dado->freq);
-        //putchar('\n');
-        if(n->dado->letra != NULL)
-        {
+
+        /*if(n->dado->letra != NULL)
+        {*/
+
             fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
             unsigned char byte1 = (n->dado->freq & 255);
             unsigned char byte2 = ((n->dado->freq>>8) & 255);
@@ -57,20 +58,49 @@ void percorrerFila(NoFila *f)
             fwrite(&byte2, sizeof(char), 1, arqSaida);
             fwrite(&byte3, sizeof(char), 1, arqSaida);
             fwrite(&byte4, sizeof(char), 1, arqSaida);
+            k = k +1;
+        //}
+        n = n->prox;
+    }
+}
+void percorrerFilaD(NoFila *f)
+{
+    int k = 1;
+    NoFila* n = f;
+    while(n != NULL)
+    {
+
+
+
+        if(n->dado->letra != NULL)
+        {
+            printf("%d - Letra: %d\t", k,n->dado->letra);
+            printf("Frequencia: %d\n", n->dado->freq);
+            /*fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
+            unsigned char byte1 = (n->dado->freq & 255);
+            unsigned char byte2 = ((n->dado->freq>>8) & 255);
+            unsigned char byte3 = ((n->dado->freq>>16) & 255);
+            unsigned char byte4 = ((n->dado->freq>>31) & 255);
+            fwrite(&byte1, sizeof(char), 1, arqSaida);
+            fwrite(&byte2, sizeof(char), 1, arqSaida);
+            fwrite(&byte3, sizeof(char), 1, arqSaida);
+            fwrite(&byte4, sizeof(char), 1, arqSaida);*/
+            k = k +1;
         }
         n = n->prox;
     }
 }
 
+
 void lerArq(char *nome, char tipo)
 {
+    quantosBytes= 0;
     if( (arq = fopen(nome, "rb")) == NULL)
     {
-        printf("N�o foi possivel abrir o arquivo, verifique sua exist�ncia e o caminho");
+        printf("Nao foi possivel abrir o arquivo, verifique sua existencia e o caminho");
     }
     else
     {
-        NoFila* f = create();
         tamanho = 0;
         int i = 0;
         int dados = 0;
@@ -80,9 +110,12 @@ void lerArq(char *nome, char tipo)
 
         if(tipo == 'c')
         {
+
+            NoFila* f = create();
             char achou;
             while(fread(&aux, sizeof(char), 1, arq))
             {
+                quantosBytes = quantosBytes +1;
                 achou = 0;
                 if(tamanho == 0)
                 {
@@ -110,8 +143,19 @@ void lerArq(char *nome, char tipo)
                 }
 
             }
+            printf("%d\n", quantosBytes);
 
             rewind(arq);
+            quantosBytes = 0;
+            arqSaida = fopen(strcat(nome, ".dao"),"wb");
+            if(arqSaida == NULL)
+            {
+                printf("Erro na abertura do arquivo!");
+                return 1;
+            }
+            fwrite(" ", sizeof(char), 1, arqSaida);
+            fwrite(&tamanho, sizeof(int), 1, arqSaida);
+            printf("%d\n", tamanho);
             int j = 0;
             for(;j < tamanho;j++)
             {
@@ -125,20 +169,12 @@ void lerArq(char *nome, char tipo)
                 free(x);
             }
             j = 0;
-            arqSaida = fopen(strcat(nome, ".dao"),"wb");
-            if(arqSaida == NULL)
-            {
-                printf("Erro na abertura do arquivo!");
-                return 1;
-            }
-            fwrite(" ", sizeof(char), 1, arqSaida);
-            fwrite(&tamanho, sizeof(int), 1, arqSaida);
-            //printf("%d", tamanho);
             percorrerFila(f);
             while(tamanho >= 2)
             {
                 criarArvore(f);
             }
+            //printf("arvore:\n");
             //percorrerArvore(f->dado);
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
@@ -157,17 +193,21 @@ void lerArq(char *nome, char tipo)
             unsigned char aux;
             int codigoAtual = 0;
             inicio->codigo = NULL;
+            printf("codigos:\n");
             while(fread(&aux, sizeof(char), 1, arq))
             {
+
                 while(codigos->letra != aux && codigos != NULL)
                     codigos = codigos->prox;
+
                 if(codigos->letra == aux)
                 {
-                    int v;
+
+                    //printf("Atual: %c\n", codigos->letra);
                     if(tamanhoCodigoEmByte != 0)
                     {
                         int i = 0;
-                        for(;i<codigos->tamanho; i++)//convertedo p int
+                        for(;i<codigos->tamanho; i++)
                         {
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
@@ -177,14 +217,18 @@ void lerArq(char *nome, char tipo)
                             byte = byte << codigos->tamanho;
                             byte += codigoAtual;
                             tamanhoCodigoEmByte -=codigos->tamanho;
+                            quantosBytes = quantosBytes+1;
                             codigoAtual = 0;
                         }
-                        else//  ERRO CUIDADO
+                        else
                         {
                             byte = byte << tamanhoCodigoEmByte;
                             byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
                             int t = codigos->tamanho - tamanhoCodigoEmByte;
                             fwrite(&byte, sizeof(char),1, arqSaida);
+                            //printf("%d\t", byte);
+
+                            quantosBytes = quantosBytes+1;
                             byte = 0;
                             //byte += codigoAtual << codigos->tamanho + tamanhoCodigoEmByte;
                             byte += codigoAtual << 8 - t;
@@ -198,6 +242,9 @@ void lerArq(char *nome, char tipo)
                     if(tamanhoCodigoEmByte == 0)
                     {
                         fwrite(&byte, sizeof(char),1,arqSaida);
+                        //printf("%d\t", byte);
+
+
                         byte = 0;
                         tamanhoCodigoEmByte = 8;
                     }
@@ -208,16 +255,21 @@ void lerArq(char *nome, char tipo)
             {
                 byte = byte << tamanhoCodigoEmByte;
                 fwrite(&byte, sizeof(char), 1, arqSaida);
+
+                //printf("%d\t", byte);
                 fseek(arqSaida, 0, SEEK_SET);
                 fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
             }
 
+            printf("Tamanho: %d", quantosBytes);
             free(falta);
             fclose(arqSaida);
             fclose(arq);
+            free(f);
         }
-        else if(tipo == 'd')  // LORENNA EH COM VC
+        else if(tipo == 'd')
         {
+
             int freq = 0;
             unsigned char letra;
             char lixo = 0;
@@ -227,13 +279,11 @@ void lerArq(char *nome, char tipo)
             rewind(arq);
             fread(&lixo, sizeof(char),1, arq);
             fread(&tamanho, sizeof(int),1, arq);
-            printf("%d", tamanho);
+            printf("%d\n", tamanho);
             NoFila* f = create();
-
             for(;i<tamanho;i++){
                 fread(&letra, sizeof(char),1, arq);
                 fread(&freq, sizeof(int),1, arq);
-
                 NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
                 x->freq = (int)freq;
                 x->letra = (unsigned char)letra;
@@ -243,17 +293,20 @@ void lerArq(char *nome, char tipo)
                 push(&f, x);
                 free(x);
             }
+            i = 0;
+           // percorrerFilaD(f);
             while(tamanho >= 2)
             {
-                criarArvoreD(f);
+                criarArvore(f);
             }
-            //percorrerArvoreD(f->dado);
-             char nome1[240];
+            //printf("arvore:\n");
+            //percorrerArvore(f->dado);
+            char nome1[240];
             int tamanhoNome = strlen(nome);
                memset(nome1, '\0', sizeof(nome1));
 
             strncpy(nome1, nome, tamanhoNome-4);
-            //printf("%s", nome1);
+            printf("%s\n", nome1);
             arqSaida = fopen(nome1,"wb");
             if(arqSaida == NULL)
             {
@@ -264,18 +317,33 @@ void lerArq(char *nome, char tipo)
             auxCodigo = NULL;
 
             char qtd;
+            int cont= 0;
+            printf("codigos:\n");
+            FILE *arqTeste;
+            arqTeste = fopen("D:\\teste.txt","wb");
+
+            if(arqSaida == NULL)
+            {
+                printf("Erro na abertura do arquivo!");
+                return 1;
+            }
             while(fread(&aux,sizeof(char),1,arq))
             {
                 qtd = 8;
-                //printf("%d\n", aux);
+                cont++;
+                //printf("%d\t", aux);
+                fwrite(&aux, sizeof(char), 1, arqTeste);
                 if(ftell(arq) == fim)
                     qtd = 8 - lixo;
                 escreverArqD(&aux, f->dado, qtd, fim);
             }
 
 
+                        printf("\n%d\n", cont);
 
+            printf("%d", quantosBytes);
             fclose(arq);
+            fclose(arqTeste);
             fclose(arqSaida);
         }
     }
@@ -315,6 +383,9 @@ void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim){
         {
             qtd -= 7-t;
         }
+
+        //printf("%d-Atual: %c\t",quantosBytes, no->letra);
+        //printf("Freq: %d\n", no->freq);
         fwrite(&(no->letra), sizeof(char), 1, arqSaida);
         no = raiz;
     }
@@ -382,25 +453,6 @@ void percorrerArvore(NoArvore* a)
     t.letra = a->letra;
     t.freq = a->freq;
     int j = 0;
-
-    char v;
-    if(a->letra != NULL)
-    {
-        /*fwrite(&a->letra, sizeof(char), 1, arqSaida);
-        unsigned char byte1 = (a->freq & 255);
-        unsigned char byte2 = ((a->freq>>8) & 255);
-        unsigned char byte3 = ((a->freq>>16) & 255);
-        unsigned char byte4 = ((a->freq>>31) & 255);
-        fwrite(&byte1, sizeof(char), 1, arqSaida);
-        fwrite(&byte2, sizeof(char), 1, arqSaida);
-        fwrite(&byte3, sizeof(char), 1, arqSaida);
-        fwrite(&byte4, sizeof(char), 1, arqSaida);*/
-    }
-    for(;j<4;j++)
-    {
-        v = a->freq >> j * 8;
-        //fwrite(&v, sizeof(char),1, arqSaida);
-    }
     printf("%c\t", a->letra);//quando eu uso o << ou +
     printf("%d\n", a->freq);
     percorrerArvore(a->dir);
@@ -411,19 +463,13 @@ void percorrerArvoreD(NoArvore* a)
 {
     if(a == NULL)
         return;
-    percorrerArvore(a->esq);
+    percorrerArvoreD(a->esq);
     Letra t;
     t.letra = a->letra;
     t.freq = a->freq;
     int j = 0;
-    char v;
-    for(;j<4;j++)
-    {
-        v = a->freq >> j * 8;
-        //fwrite(&v, sizeof(char),1, arqSaida);
-    }
     printf("%c\t", a->letra);//quando eu uso o << ou +
     printf("%d\n", a->freq);
-    percorrerArvore(a->dir);
+    percorrerArvoreD(a->dir);
 
 }
