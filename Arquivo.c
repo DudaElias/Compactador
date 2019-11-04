@@ -69,9 +69,6 @@ void percorrerFilaD(NoFila *f)
     NoFila* n = f;
     while(n != NULL)
     {
-
-
-
         if(n->dado->letra != NULL)
         {
             printf("%d - Letra: %d\t", k,n->dado->letra);
@@ -361,7 +358,7 @@ void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim){
     }
     while(t != -1 && qtd > 0)
     {
-        while(no->dir != NULL && no->esq != NULL && t >=0){
+        while(no->vazio && t >=0){
             aux = *car >> 7;
             *car = *car << 1;
 
@@ -409,7 +406,7 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         Tabela *ta = codigos;
         i = 0;
         char* codigoReal = (char*)malloc(topo * sizeof(char));
-        for(; i< topo; i++)
+        for(; i < topo; i++)
         {
             codigoReal[i] = codigo[i];
         }
