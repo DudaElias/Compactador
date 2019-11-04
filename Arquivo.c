@@ -181,7 +181,7 @@ void lerArq(char *nome, char tipo)
                 criarArvore(f);
             }
             //printf("arvore:\n");
-            //percorrerArvore(f->dado);
+            percorrerArvore(f->dado);
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->primeiro = 1;
@@ -206,9 +206,6 @@ void lerArq(char *nome, char tipo)
 
                 while(codigos->letra != aux && codigos != NULL)
                     codigos = codigos->prox;
-                if(codigos->letra == 23)
-                    printf("fodase");
-
                 if(codigos->letra == aux)
                 {
                     if(tamanhoCodigoEmByte != 0)
@@ -219,8 +216,6 @@ void lerArq(char *nome, char tipo)
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
                         }
-                        if(codigos->letra == NULL)
-                            printf("%d", codigoAtual);
                         if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
                         {
                             byte = byte << codigos->tamanho;
@@ -235,6 +230,7 @@ void lerArq(char *nome, char tipo)
                             byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
                             int t = codigos->tamanho - tamanhoCodigoEmByte;
                             fwrite(&byte, sizeof(char),1, arqSaida);
+                            printf("%d\t", byte);
                             quantosBytes = quantosBytes+1;
                             byte = 0;
                             byte += codigoAtual << 8 - t;
@@ -247,7 +243,7 @@ void lerArq(char *nome, char tipo)
                     if(tamanhoCodigoEmByte == 0)
                     {
                         fwrite(&byte, sizeof(char),1,arqSaida);
-                        //printf("%d\t", byte);
+                        printf("%d\t", byte);
                         byte = 0;
                         tamanhoCodigoEmByte = 8;
                     }
@@ -258,6 +254,8 @@ void lerArq(char *nome, char tipo)
             {
                 byte = byte << tamanhoCodigoEmByte;
                 fwrite(&byte, sizeof(char), 1, arqSaida);
+                printf("%d\n", byte);
+
                 fseek(arqSaida, 0, SEEK_SET);
                 fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
             }
@@ -448,11 +446,8 @@ void percorrerArvore(NoArvore* a)
     t.letra = a->letra;
     t.freq = a->freq;
     int j = 0;
-    if(a->vazio != 1)
-    {
-    printf("%d\t", a->letra);//quando eu uso o << ou +
+    printf("%c\t", a->letra);//quando eu uso o << ou +
     printf("%d\n", a->freq);
-    }
     percorrerArvore(a->dir);
 
 }
