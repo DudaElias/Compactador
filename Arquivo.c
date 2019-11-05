@@ -174,50 +174,13 @@ void lerArq(char *nome, char tipo)
             inicio->prox = codigos;
             inicio->letra = NULL;
 
-            int tamanhoCodigoEmByte = 0;
+            int tamanhoCodigoEmByte = 8;
             char* falta;
             unsigned char byte = 0;
             unsigned char aux;
             int codigoAtual = 0;
             inicio->codigo = NULL;
             printf("codigos:\n");
-            int bitsSobrando = 0;
-            /*int bitsSobrando = 0, qtosBitsSobrando = 0, total = 0;
-            for (fread(&caracterLido, sizeof(char), 1, arq); !feof(arq); fread(&caracterLido, sizeof(char), 1, arq))
-            {
-                while(codigos->letra != caracterLido && codigos != NULL)
-                {
-                    codigos = codigos->prox;
-                }
-                int i = 0;
-                for(;i<codigos->tamanho; i++)
-                {
-                    if(codigos->codigo[i] == '1')
-                        codigoAtual += pow(2,(codigos->tamanho-1 - i));
-                }
-                bitsSobrando = (bitsSobrando << codigos->tamanho) + codigoAtual; // O código é colocado à direita do que já existir na variável bitsSobrando
-                qtosBitsSobrando += codigos->tamanho;
-                while (qtosBitsSobrando >= 8) // Após adicionar o código, verifica-se se agora há bits suficientes para formar 1 ou mais bytes completo
-                {
-                    unsigned char caracter = bitsSobrando >> (qtosBitsSobrando - 8); // Pega-se o byte completo mais à esquerda da variável bitsSobrando
-                    fwrite(&caracter, sizeof(char), 1, arqSaida); // O byte é printado no arquivo
-                    int deslocamento = sizeof(int) * 8 - qtosBitsSobrando + 8;
-                    bitsSobrando = (bitsSobrando << deslocamento) >> deslocamento; // Move-se para a esquerda e de volta para a direita, removendo o byte printado
-                    qtosBitsSobrando -= 8;
-                    total++;
-                }
-            }
-            unsigned char bitsLixoFinal = 0;
-            if (qtosBitsSobrando > 0) // Se ainda há bits sobrando, eles são complementados com 0 para formar um byte.
-            {
-                unsigned char caracter = bitsSobrando << (8 - qtosBitsSobrando);
-                bitsLixoFinal = 8 - qtosBitsSobrando;
-                fwrite(&caracter, sizeof(char), 1, arqSaida);
-                total++;
-            }
-
-            fseek(arqSaida, 0, SEEK_SET);
-            fprintf(arqSaida, "%c", bitsLixoFinal); // A quantidade de zeros que complementou o último byte deve ser printada no começo para uso na descompactação*/
 
             while(fread(&aux, sizeof(char), 1, arq))
             {
@@ -229,7 +192,7 @@ void lerArq(char *nome, char tipo)
 
                 if(codigos->letra == aux)
                 {
-                    if(tamanhoCodigoEmByte < 8)
+                    if(tamanhoCodigoEmByte != 0)
                     {
                         int i = 0;
                         for(;i<codigos->tamanho; i++)
@@ -237,17 +200,7 @@ void lerArq(char *nome, char tipo)
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
                         }
-                        bitsSobrando = (bitsSobrando << codigos->tamanho) + codigoAtual; // O código é colocado à direita do que já existir na variável bitsSobrando
-                        tamanhoCodigoEmByte += codigos->tamanho;
-                        while (tamanhoCodigoEmByte >= 8) // Após adicionar o código, verifica-se se agora há bits suficientes para formar 1 ou mais bytes completo
-                        {
-                            unsigned char caracter = bitsSobrando >> (tamanhoCodigoEmByte - 8); // Pega-se o byte completo mais à esquerda da variável bitsSobrando
-                            fwrite(&caracter, sizeof(char), 1, arqSaida); // O byte é printado no arquivo
-                            int deslocamento = sizeof(int) * 8 - tamanhoCodigoEmByte + 8;
-                            bitsSobrando = (bitsSobrando << deslocamento) >> deslocamento; // Move-se para a esquerda e de volta para a direita, removendo o byte printado
-                            tamanhoCodigoEmByte -= 8;
-                        }
-                        /*if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
+                        if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
                         {
                             byte = byte << codigos->tamanho;
                             byte += codigoAtual;
@@ -266,7 +219,6 @@ void lerArq(char *nome, char tipo)
                             char cont = t/8;
                             while(cont >= 1)
                             {
-                                byte = byte << 8;
                                 byte += codigoAtual >> t-8;
                                 codigoAtual = codigoAtual << sizeof(int) * 8 - t + 8;
                                 codigoAtual = codigoAtual >> sizeof(int) * 8 - t + 8;
@@ -282,29 +234,29 @@ void lerArq(char *nome, char tipo)
                                 tamanhoCodigoEmByte -=t;
                                 codigoAtual = 0;
                             }
-                        }*/
+                        }
                     }
-                    /*if(tamanhoCodigoEmByte > 0)
+                    if(tamanhoCodigoEmByte == 0)
                     {
                         fwrite(&byte, sizeof(char),1,arqSaida);
                         byte = 0;
                         tamanhoCodigoEmByte = 8;
                         codigoAtual = 0;
-                    }*/
+                    }
                 }
                 codigos = inicio->prox;
             }
             if(tamanhoCodigoEmByte != 8)
             {
-                /*byte = byte << tamanhoCodigoEmByte;
+                byte = byte << tamanhoCodigoEmByte;
                 fwrite(&byte, sizeof(char), 1, arqSaida);
                 fseek(arqSaida, 0, SEEK_SET);
-                fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);*/
-                unsigned char caracter = bitsSobrando << (8 - tamanhoCodigoEmByte);
+                fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
+                /*unsigned char caracter = bitsSobrando << (8 - tamanhoCodigoEmByte);
                 char bitsLixoFinal = 8 - tamanhoCodigoEmByte;
                 fwrite(&caracter, sizeof(char), 1, arqSaida);
                 fseek(arqSaida, 0, SEEK_SET);
-                fwrite(&bitsLixoFinal, sizeof(char), 1, arqSaida);
+                fwrite(&bitsLixoFinal, sizeof(char), 1, arqSaida);*/
             }
             free(falta);
             fclose(arqSaida);
