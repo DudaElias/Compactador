@@ -45,21 +45,16 @@ void percorrerFila(NoFila *f)
     NoFila* n = f;
     while(n != NULL)
     {
-
-        /*if(n->dado->letra != NULL)
-        {*/
-
-            fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
-            unsigned char byte1 = (n->dado->freq & 255);
-            unsigned char byte2 = ((n->dado->freq>>8) & 255);
-            unsigned char byte3 = ((n->dado->freq>>16) & 255);
-            unsigned char byte4 = ((n->dado->freq>>31) & 255);
-            fwrite(&byte1, sizeof(char), 1, arqSaida);
-            fwrite(&byte2, sizeof(char), 1, arqSaida);
-            fwrite(&byte3, sizeof(char), 1, arqSaida);
-            fwrite(&byte4, sizeof(char), 1, arqSaida);
-            k = k +1;
-        //}
+        fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
+        unsigned char byte1 = (n->dado->freq & 255);
+        unsigned char byte2 = ((n->dado->freq>>8) & 255);
+        unsigned char byte3 = ((n->dado->freq>>16) & 255);
+        unsigned char byte4 = ((n->dado->freq>>24) & 255);
+        fwrite(&byte1, sizeof(char), 1, arqSaida);
+        fwrite(&byte2, sizeof(char), 1, arqSaida);
+        fwrite(&byte3, sizeof(char), 1, arqSaida);
+        fwrite(&byte4, sizeof(char), 1, arqSaida);
+        k = k +1;
         n = n->prox;
     }
 }
@@ -69,21 +64,9 @@ void percorrerFilaD(NoFila *f)
     NoFila* n = f;
     while(n != NULL)
     {
-        /*if(n->dado->letra != NULL)
-        {*/
-            printf("%d - Letra: %d\t", k,n->dado->letra);
-            printf("Frequencia: %d\n", n->dado->freq);
-            /*fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
-            unsigned char byte1 = (n->dado->freq & 255);
-            unsigned char byte2 = ((n->dado->freq>>8) & 255);
-            unsigned char byte3 = ((n->dado->freq>>16) & 255);
-            unsigned char byte4 = ((n->dado->freq>>31) & 255);
-            fwrite(&byte1, sizeof(char), 1, arqSaida);
-            fwrite(&byte2, sizeof(char), 1, arqSaida);
-            fwrite(&byte3, sizeof(char), 1, arqSaida);
-            fwrite(&byte4, sizeof(char), 1, arqSaida);*/
-            k = k +1;
-        //}
+        printf("%d - Letra: %d\t", k,n->dado->letra);
+        printf("Frequencia: %d\n", n->dado->freq);
+        k = k +1;
         n = n->prox;
     }
 }
@@ -110,16 +93,8 @@ void lerArq(char *nome, char tipo)
 
             NoFila* f = create();
             char achou;
-            //int cont = 0;int b = 0;
             while(fread(&aux, sizeof(char), 1, arq))
             {
-                /*cont++;
-                if(aux == 0 && b == 0)
-                {
-                    printf("%d\n", cont);
-                    b = 1;
-                }*/
-                //printf("%d\n", aux);
                 quantosBytes = quantosBytes +1;
                 achou = 0;
                 if(tamanho == 0)
@@ -159,7 +134,14 @@ void lerArq(char *nome, char tipo)
                 return 1;
             }
             fwrite(" ", sizeof(char), 1, arqSaida);
-            fwrite(&tamanho, sizeof(int), 1, arqSaida);
+            unsigned char byte1 = (tamanho & 255);
+            unsigned char byte2 = ((tamanho>>8) & 255);
+            unsigned char byte3 = ((tamanho>>16) & 255);
+            unsigned char byte4 = ((tamanho>>24) & 255);
+            fwrite(&byte1, sizeof(char), 1, arqSaida);
+            fwrite(&byte2, sizeof(char), 1, arqSaida);
+            fwrite(&byte3, sizeof(char), 1, arqSaida);
+            fwrite(&byte4, sizeof(char), 1, arqSaida);
             printf("%d\n", tamanho);
             int j = 0;
             for(;j < tamanho;j++)
@@ -175,13 +157,11 @@ void lerArq(char *nome, char tipo)
             }
             j = 0;
             percorrerFila(f);
-            //percorrerFilaD(f);
+            percorrerFilaD(f);
             while(tamanho >= 2)
             {
                 criarArvore(f);
             }
-            //printf("arvore:\n");
-            percorrerArvore(f->dado);
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->primeiro = 1;
@@ -194,21 +174,62 @@ void lerArq(char *nome, char tipo)
             inicio->prox = codigos;
             inicio->letra = NULL;
 
-            int tamanhoCodigoEmByte = 8;
+            int tamanhoCodigoEmByte = 0;
             char* falta;
             unsigned char byte = 0;
             unsigned char aux;
             int codigoAtual = 0;
             inicio->codigo = NULL;
             printf("codigos:\n");
+            int bitsSobrando = 0;
+            /*int bitsSobrando = 0, qtosBitsSobrando = 0, total = 0;
+            for (fread(&caracterLido, sizeof(char), 1, arq); !feof(arq); fread(&caracterLido, sizeof(char), 1, arq))
+            {
+                while(codigos->letra != caracterLido && codigos != NULL)
+                {
+                    codigos = codigos->prox;
+                }
+                int i = 0;
+                for(;i<codigos->tamanho; i++)
+                {
+                    if(codigos->codigo[i] == '1')
+                        codigoAtual += pow(2,(codigos->tamanho-1 - i));
+                }
+                bitsSobrando = (bitsSobrando << codigos->tamanho) + codigoAtual; // O código é colocado à direita do que já existir na variável bitsSobrando
+                qtosBitsSobrando += codigos->tamanho;
+                while (qtosBitsSobrando >= 8) // Após adicionar o código, verifica-se se agora há bits suficientes para formar 1 ou mais bytes completo
+                {
+                    unsigned char caracter = bitsSobrando >> (qtosBitsSobrando - 8); // Pega-se o byte completo mais à esquerda da variável bitsSobrando
+                    fwrite(&caracter, sizeof(char), 1, arqSaida); // O byte é printado no arquivo
+                    int deslocamento = sizeof(int) * 8 - qtosBitsSobrando + 8;
+                    bitsSobrando = (bitsSobrando << deslocamento) >> deslocamento; // Move-se para a esquerda e de volta para a direita, removendo o byte printado
+                    qtosBitsSobrando -= 8;
+                    total++;
+                }
+            }
+            unsigned char bitsLixoFinal = 0;
+            if (qtosBitsSobrando > 0) // Se ainda há bits sobrando, eles são complementados com 0 para formar um byte.
+            {
+                unsigned char caracter = bitsSobrando << (8 - qtosBitsSobrando);
+                bitsLixoFinal = 8 - qtosBitsSobrando;
+                fwrite(&caracter, sizeof(char), 1, arqSaida);
+                total++;
+            }
+
+            fseek(arqSaida, 0, SEEK_SET);
+            fprintf(arqSaida, "%c", bitsLixoFinal); // A quantidade de zeros que complementou o último byte deve ser printada no começo para uso na descompactação*/
+
             while(fread(&aux, sizeof(char), 1, arq))
             {
 
                 while(codigos->letra != aux && codigos != NULL)
+                {
                     codigos = codigos->prox;
+                }
+
                 if(codigos->letra == aux)
                 {
-                    if(tamanhoCodigoEmByte != 0)
+                    if(tamanhoCodigoEmByte < 8)
                     {
                         int i = 0;
                         for(;i<codigos->tamanho; i++)
@@ -216,7 +237,17 @@ void lerArq(char *nome, char tipo)
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
                         }
-                        if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
+                        bitsSobrando = (bitsSobrando << codigos->tamanho) + codigoAtual; // O código é colocado à direita do que já existir na variável bitsSobrando
+                        tamanhoCodigoEmByte += codigos->tamanho;
+                        while (tamanhoCodigoEmByte >= 8) // Após adicionar o código, verifica-se se agora há bits suficientes para formar 1 ou mais bytes completo
+                        {
+                            unsigned char caracter = bitsSobrando >> (tamanhoCodigoEmByte - 8); // Pega-se o byte completo mais à esquerda da variável bitsSobrando
+                            fwrite(&caracter, sizeof(char), 1, arqSaida); // O byte é printado no arquivo
+                            int deslocamento = sizeof(int) * 8 - tamanhoCodigoEmByte + 8;
+                            bitsSobrando = (bitsSobrando << deslocamento) >> deslocamento; // Move-se para a esquerda e de volta para a direita, removendo o byte printado
+                            tamanhoCodigoEmByte -= 8;
+                        }
+                        /*if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
                         {
                             byte = byte << codigos->tamanho;
                             byte += codigoAtual;
@@ -228,36 +259,52 @@ void lerArq(char *nome, char tipo)
                         {
                             byte = byte << tamanhoCodigoEmByte;
                             byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
-                            int t = codigos->tamanho - tamanhoCodigoEmByte;
+                            char t = codigos->tamanho - tamanhoCodigoEmByte;
                             fwrite(&byte, sizeof(char),1, arqSaida);
-                            printf("%d\t", byte);
-                            quantosBytes = quantosBytes+1;
                             byte = 0;
-                            byte += codigoAtual << 8 - t;
-                            byte = byte >> 8 - t;
                             tamanhoCodigoEmByte = 8;
-                            tamanhoCodigoEmByte -=t;
-                            codigoAtual = 0;
-                        }
+                            char cont = t/8;
+                            while(cont >= 1)
+                            {
+                                byte = byte << 8;
+                                byte += codigoAtual >> t-8;
+                                codigoAtual = codigoAtual << sizeof(int) * 8 - t + 8;
+                                codigoAtual = codigoAtual >> sizeof(int) * 8 - t + 8;
+                                t = t - tamanhoCodigoEmByte;
+                                fwrite(&byte, sizeof(char),1, arqSaida);
+                                cont = t/8;
+                                byte = 0;
+                            }
+                            if(t != 0)
+                            {
+                                byte += codigoAtual << 8 - t;
+                                byte = byte >> 8 - t;
+                                tamanhoCodigoEmByte -=t;
+                                codigoAtual = 0;
+                            }
+                        }*/
                     }
-                    if(tamanhoCodigoEmByte == 0)
+                    /*if(tamanhoCodigoEmByte > 0)
                     {
                         fwrite(&byte, sizeof(char),1,arqSaida);
-                        printf("%d\t", byte);
                         byte = 0;
                         tamanhoCodigoEmByte = 8;
-                    }
+                        codigoAtual = 0;
+                    }*/
                 }
                 codigos = inicio->prox;
             }
             if(tamanhoCodigoEmByte != 8)
             {
-                byte = byte << tamanhoCodigoEmByte;
+                /*byte = byte << tamanhoCodigoEmByte;
                 fwrite(&byte, sizeof(char), 1, arqSaida);
-                printf("%d\n", byte);
-
                 fseek(arqSaida, 0, SEEK_SET);
-                fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
+                fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);*/
+                unsigned char caracter = bitsSobrando << (8 - tamanhoCodigoEmByte);
+                char bitsLixoFinal = 8 - tamanhoCodigoEmByte;
+                fwrite(&caracter, sizeof(char), 1, arqSaida);
+                fseek(arqSaida, 0, SEEK_SET);
+                fwrite(&bitsLixoFinal, sizeof(char), 1, arqSaida);
             }
             free(falta);
             fclose(arqSaida);
@@ -290,6 +337,7 @@ void lerArq(char *nome, char tipo)
                 push(&f, x);
                 free(x);
             }
+            percorrerFilaD(f);
             i = 0;
             while(tamanho >= 2)
             {
@@ -406,7 +454,7 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         /*printf("%c\t", a->letra);
         printf("%s\n", codigoReal);*/
 
-        if(a->letra == NULL)
+        if(a->letra == 112)
             printf("%s\n", codigoReal);
 
         Tabela* t = (Tabela*)malloc(sizeof(Tabela));
