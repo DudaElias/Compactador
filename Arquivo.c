@@ -216,16 +216,18 @@ void lerArq(char *nome, char tipo)
                             fwrite(&byte, sizeof(char),1, arqSaida);
                             byte = 0;
                             tamanhoCodigoEmByte = 8;
-                            char cont = t/8;
+                            char t2 = codigos->tamanho - tamanhoCodigoEmByte;
+                            char cont = t2/8;
                             while(cont >= 1)
                             {
-                                byte += codigoAtual >> t-8;
-                                codigoAtual = codigoAtual << sizeof(int) * 8 - t + 8;
-                                codigoAtual = codigoAtual >> sizeof(int) * 8 - t + 8;
-                                t = t - tamanhoCodigoEmByte;
+                                byte += codigoAtual >> t2-8;
+                                codigoAtual = codigoAtual << sizeof(int) * 8 - t2 + 8;
+                                codigoAtual = codigoAtual >> sizeof(int) * 8 - t2 + 8;
+                                t2 = t2 - tamanhoCodigoEmByte;
                                 fwrite(&byte, sizeof(char),1, arqSaida);
                                 cont = t/8;
                                 byte = 0;
+                                t = t2;
                             }
                             if(t != 0)
                             {
