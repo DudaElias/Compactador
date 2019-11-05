@@ -174,7 +174,7 @@ void lerArq(char *nome, char tipo)
             inicio->prox = codigos;
             inicio->letra = NULL;
 
-            int tamanhoCodigoEmByte = 8;
+            int tamanhoCodigoEmByte = 0;
             char* falta;
             unsigned char byte = 0;
             unsigned char aux;
@@ -192,7 +192,7 @@ void lerArq(char *nome, char tipo)
 
                 if(codigos->letra == aux)
                 {
-                    if(tamanhoCodigoEmByte != 0)
+                    if(tamanhoCodigoEmByte != 8)
                     {
                         int i = 0;
                         for(;i<codigos->tamanho; i++)
@@ -200,51 +200,30 @@ void lerArq(char *nome, char tipo)
                             if(codigos->codigo[i] == '1')
                                 codigoAtual += pow(2,(codigos->tamanho-1 - i));
                         }
-                        if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
+
+                        if(8 - tamanhoCodigoEmByte < codigos->tamanho)
                         {
-                            byte = byte << codigos->tamanho;
-                            byte += codigoAtual;
-                            tamanhoCodigoEmByte -=codigos->tamanho;
-                            quantosBytes = quantosBytes+1;
-                            codigoAtual = 0;
+                            byte = byte << 8 - tamanhoCodigoEmByte;
+                            byte = codigoAtual << sizeof(int)*4 - (sizeof(int)*4 - codigos->tamanho);
                         }
                         else
                         {
-                            byte = byte << tamanhoCodigoEmByte;
-                            byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
-                            char t = codigos->tamanho - tamanhoCodigoEmByte;
-                            fwrite(&byte, sizeof(char),1, arqSaida);
-                            byte = 0;
-                            tamanhoCodigoEmByte = 8;
-                            char t2 = codigos->tamanho - tamanhoCodigoEmByte;
-                            char cont = t2/8;
-                            while(cont >= 1)
-                            {
-                                byte += codigoAtual >> t2-8;
-                                codigoAtual = codigoAtual << sizeof(int) * 8 - t2 + 8;
-                                codigoAtual = codigoAtual >> sizeof(int) * 8 - t2 + 8;
-                                t2 = t2 - tamanhoCodigoEmByte;
-                                fwrite(&byte, sizeof(char),1, arqSaida);
-                                cont = t/8;
-                                byte = 0;
-                                t = t2;
-                            }
-                            if(t != 0)
-                            {
-                                byte += codigoAtual << 8 - t;
-                                byte = byte >> 8 - t;
-                                tamanhoCodigoEmByte -=t;
-                                codigoAtual = 0;
-                            }
+                            byte = byte << codigos->tamanho;
+                            byte = codigoAtual;
+                            tamanhoCodigoEmByte += codigos->tamanho;
                         }
+
                     }
-                    if(tamanhoCodigoEmByte == 0)
+                    if(tamanhoCodigoEmByte == 8)
                     {
-                        fwrite(&byte, sizeof(char),1,arqSaida);
+
+                        fwrite(&byte, sizeof(char), 1, arqSaida);
                         byte = 0;
-                        tamanhoCodigoEmByte = 8;
                         codigoAtual = 0;
-                    }
+                        tamanhoCodigoEmByte = 0;
+                     }
+
+
                 }
                 codigos = inicio->prox;
             }
@@ -254,11 +233,6 @@ void lerArq(char *nome, char tipo)
                 fwrite(&byte, sizeof(char), 1, arqSaida);
                 fseek(arqSaida, 0, SEEK_SET);
                 fwrite(&tamanhoCodigoEmByte, sizeof(char), 1, arqSaida);
-                /*unsigned char caracter = bitsSobrando << (8 - tamanhoCodigoEmByte);
-                char bitsLixoFinal = 8 - tamanhoCodigoEmByte;
-                fwrite(&caracter, sizeof(char), 1, arqSaida);
-                fseek(arqSaida, 0, SEEK_SET);
-                fwrite(&bitsLixoFinal, sizeof(char), 1, arqSaida);*/
             }
             free(falta);
             fclose(arqSaida);
@@ -468,3 +442,50 @@ void percorrerArvoreD(NoArvore* a)
     percorrerArvoreD(a->dir);
 
 }
+
+
+/*if(tamanhoCodigoEmByte - codigos->tamanho >= 0)
+                        {
+                            byte = byte << codigos->tamanho;
+                            byte += codigoAtual;
+                            tamanhoCodigoEmByte -=codigos->tamanho;
+                            quantosBytes = quantosBytes+1;
+                            codigoAtual = 0;
+                        }
+                        else
+                        {
+                            byte = byte << tamanhoCodigoEmByte;
+                            byte += codigoAtual >>(codigos->tamanho - tamanhoCodigoEmByte);
+                            char t = codigos->tamanho - tamanhoCodigoEmByte;
+                            fwrite(&byte, sizeof(char),1, arqSaida);
+                            byte = 0;
+                            tamanhoCodigoEmByte = 8;
+                            char t2 = codigos->tamanho - tamanhoCodigoEmByte;
+                            char cont = t2/8;
+                            while(cont >= 1)
+                            {
+                                byte += codigoAtual >> t2-8;
+                                codigoAtual = codigoAtual << sizeof(int) * 8 - t2 + 8;
+                                codigoAtual = codigoAtual >> sizeof(int) * 8 - t2 + 8;
+                                t2 = t2 - tamanhoCodigoEmByte;
+                                fwrite(&byte, sizeof(char),1, arqSaida);
+                                cont = t/8;
+                                byte = 0;
+                                t = t2;
+                            }
+                            if(t != 0)
+                            {
+                                byte += codigoAtual << 8 - t;
+                                byte = byte >> 8 - t;
+                                tamanhoCodigoEmByte -=t;
+                                codigoAtual = 0;
+                            }
+                        }
+                    }
+                    if(tamanhoCodigoEmByte == 0)
+                    {
+                        fwrite(&byte, sizeof(char),1,arqSaida);
+                        byte = 0;
+                        tamanhoCodigoEmByte = 8;
+                        codigoAtual = 0;
+                    }*/
