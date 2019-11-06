@@ -49,3 +49,28 @@
 	"../Arquivo.h"
 	"../Fila.h"
 
+1573050522 source:c:\users\u18343\documents\github\compactador\arquivo.c
+	"Arquivo.h"
+	<stdio.h>
+	<stdlib.h>
+	"Fila.h"
+	<string.h>
+	<math.h>
+
+1572955482 c:\users\u18343\documents\github\compactador\arquivo.h
+	<stdio.h>
+	"Fila.h"
+
+1572604703 c:\users\u18343\documents\github\compactador\fila.h
+
+1571740232 source:c:\users\u18343\documents\github\compactador\arvore.c
+
+1572604707 source:c:\users\u18343\documents\github\compactador\fila.c
+	"Fila.h"
+	<stdlib.h>
+
+1573043540 source:c:\users\u18343\documents\github\compactador\compactador\main.c
+	<stdio.h>
+	"../Arquivo.h"
+	"../Fila.h"
+

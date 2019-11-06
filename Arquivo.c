@@ -278,7 +278,6 @@ void lerArq(char *nome, char tipo)
         }
         else if(tipo == 'd')
         {
-
             int freq = 0;
             unsigned char letra;
             char lixo = 0;
@@ -326,11 +325,11 @@ void lerArq(char *nome, char tipo)
             int cont= 0;
             printf("codigos:\n");
 
-            if(arqSaida == NULL)
-            {
-                printf("Erro na abertura do arquivo!");
-                return 1;
-            }
+            //if(arqSaida == NULL)
+            //{
+               // printf("Erro na abertura do arquivo!");
+                //return 1;
+            //}
             int b = 0;
             while(fread(&aux,sizeof(char),1,arq))
             {
