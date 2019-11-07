@@ -22,7 +22,7 @@ int tamanho;
 Tabela *codigos;
 int quantosBytes;
 extern void lerArq(char *nome, char tipo);
-extern void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim, int*b );
+extern void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim);
 extern void percorrerArvore(NoArvore* a);
 extern void percorrerFila(NoFila* f);
 extern void criarArvore(NoFila* f);
