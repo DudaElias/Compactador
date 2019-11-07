@@ -5,15 +5,21 @@
 #include <string.h>
 #include <math.h>
 
+/*
+@author Lorenna Nunes e Maria Eduarda Elias Rocha
+@since 2019.
+*/
+
 FILE *arq;
 FILE *arqSaida;
-unsigned char *vetorDeLetras;
-int *frequencias;
-int tamanho;
 Tabela* codigos;
 Tabela* inicio;
-NoArvore* auxCodigo;
+NoArvore* auxCodigo; //pra que serve ele?
+int *frequencias;
+int tamanho;
 int quantosBytes;
+unsigned char *vetorDeLetras;
+
 
 void criarArvore(NoFila* f)
 {
@@ -27,7 +33,7 @@ void criarArvore(NoFila* f)
     free(novoNo);
     tamanho = tamanho - 1;
 }
-
+/*
 void criarArvoreD(NoFila* raiz){
     NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
     novoNo->esq = pop(raiz);
@@ -38,11 +44,11 @@ void criarArvoreD(NoFila* raiz){
     push(&raiz, novoNo);
     free(novoNo);
     tamanho = tamanho - 1;
-}
+}*/
 void percorrerFila(NoFila *f)
 {
     int k = 1;
-    NoFila* n = f;
+    NoFila* n = f; //criar o n é necessário?
     while(n != NULL)
     {
         fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
@@ -88,17 +94,19 @@ void lerArq(char *nome, char tipo)
         vetorDeLetras = (unsigned char*)malloc(257*sizeof(char));
         frequencias = (int*)malloc(257*sizeof(int));
 
+        //se o usuario escolher a opção de compactar
         if(tipo == 'c')
         {
-
             NoFila* f = create();
             char achou;
+            //enquanto consegue-se ler um byte do arquivo
             while(fread(&aux, sizeof(char), 1, arq))
             {
                 quantosBytes = quantosBytes +1;
                 achou = 0;
                 if(tamanho == 0)
                 {
+                    //vetor recebe a letra correspondente ao byte lido
                     vetorDeLetras[tamanho] = aux;
                     frequencias[tamanho] = 1;
                     tamanho++;
@@ -114,6 +122,7 @@ void lerArq(char *nome, char tipo)
                         }
                     }
                     i = 0;
+                    //ele vai chegar aqui?
                     if(achou == 0)
                     {
                         vetorDeLetras[tamanho] = aux;
@@ -121,10 +130,10 @@ void lerArq(char *nome, char tipo)
                         tamanho++;
                     }
                 }
-
             }
             printf("%d\n", quantosBytes);
 
+            //reinicia o arquivo
             rewind(arq);
             quantosBytes = 0;
             arqSaida = fopen(strcat(nome, ".dao"),"wb");
@@ -186,12 +195,10 @@ void lerArq(char *nome, char tipo)
 
             while(fread(&aux, sizeof(char), 1, arq))
             {
-
                 while(codigos->letra != aux && codigos != NULL)
                 {
                     codigos = codigos->prox;
                 }
-
                 if(codigos->letra == aux)
                 {
                     int i = 0;
@@ -276,6 +283,7 @@ void lerArq(char *nome, char tipo)
             fclose(arq);
             free(f);
         }
+        //se o usuario escolher a opção de descompactar
         else if(tipo == 'd')
         {
             int freq = 0;
@@ -341,8 +349,6 @@ void lerArq(char *nome, char tipo)
                 escreverArqD(&aux, f->dado, qtd, fim, &b);
                 b++;
             }
-
-
             printf("\n%d\n", cont);
 
             printf("%d", quantosBytes);
@@ -446,7 +452,6 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
             ta->prox = t;
         }
     }
-
 }
 
 void percorrerArvore(NoArvore* a)
@@ -461,9 +466,8 @@ void percorrerArvore(NoArvore* a)
     printf("%c\t", a->letra);//quando eu uso o << ou +
     printf("%d\n", a->freq);
     percorrerArvore(a->dir);
-
 }
-
+/*
 void percorrerArvoreD(NoArvore* a)
 {
     if(a == NULL)
@@ -478,3 +482,4 @@ void percorrerArvoreD(NoArvore* a)
     percorrerArvoreD(a->dir);
 
 }
+*/

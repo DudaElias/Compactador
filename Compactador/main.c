@@ -12,7 +12,8 @@ int main()
     printf("Selecione uma das opções abaixo:\n");
     printf("1 - Compactar um arquivo\n");
     printf("2 - Descompactar um arquivo\n");
-    printf("3 - Sair\n");
+    printf("3 - Sair\n\n");
+    printf("Escolha: ");
 
     scanf("%d", &escolha);
 
