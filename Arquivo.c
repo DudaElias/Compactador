@@ -63,6 +63,14 @@ void lerArq(char *nome, char tipo)
     }
     else
     {
+        fseek(arq, 0, SEEK_END);
+        int size= ftell(arq);
+        if(size == 0)
+        {
+             printf("Arquivo vazio!");
+             return;
+        }
+        rewind(arq);
         tamanho = 0;
         int i = 0;
         int dados = 0;
@@ -75,6 +83,7 @@ void lerArq(char *nome, char tipo)
         {
             NoFila* f = create();
             char achou;
+            printf("Compactando!\n");
             //enquanto consegue-se ler um byte do arquivo
             while(fread(&aux, sizeof(char), 1, arq))
             {
@@ -106,7 +115,6 @@ void lerArq(char *nome, char tipo)
                     }
                 }
             }
-            printf("%d\n", quantosBytes);
 
             //reinicia o arquivo
             rewind(arq);
@@ -128,8 +136,6 @@ void lerArq(char *nome, char tipo)
             fwrite(&byte2, sizeof(char), 1, arqSaida);
             fwrite(&byte3, sizeof(char), 1, arqSaida);
             fwrite(&byte4, sizeof(char), 1, arqSaida);
-
-            printf("%d\n", tamanho);
             int j = 0;
 
             for(;j < tamanho;j++)
@@ -211,10 +217,12 @@ void lerArq(char *nome, char tipo)
             fclose(arqSaida);
             fclose(arq);
             free(f);
+            printf("Arquivo compactado com sucesso!\n\n\n");
         }
         //se o usuario escolher a opção de descompactar
         else if(tipo == 'd')
         {
+            printf("Descompactando!\n");
             int freq = 0;
             unsigned char letra;
             char lixo = 0;
@@ -224,7 +232,6 @@ void lerArq(char *nome, char tipo)
             rewind(arq);
             fread(&lixo, sizeof(char),1, arq);
             fread(&tamanho, sizeof(int),1, arq);
-            printf("%d\n", tamanho);
             NoFila* f = create();
             for(;i<tamanho;i++){
                 fread(&letra, sizeof(char),1, arq);
@@ -268,6 +275,8 @@ void lerArq(char *nome, char tipo)
             }
             fclose(arq);
             fclose(arqSaida);
+
+            printf("Arquivo descompactado com sucesso!\n\n\n");
         }
     }
 }

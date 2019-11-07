@@ -24,7 +24,7 @@
 	<string.h>
 	<math.h>
 
-1572998056 source:d:\documentos\github\compactador\arquivo.c
+1573165073 source:d:\documentos\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>
@@ -32,7 +32,7 @@
 	<string.h>
 	<math.h>
 
-1572989970 d:\documentos\github\compactador\arquivo.h
+1573163937 d:\documentos\github\compactador\arquivo.h
 	<stdio.h>
 	"Fila.h"
 
@@ -44,7 +44,7 @@
 	"Fila.h"
 	<stdlib.h>
 
-1572991192 source:d:\documentos\github\compactador\compactador\main.c
+1573165019 source:d:\documentos\github\compactador\compactador\main.c
 	<stdio.h>
 	"../Arquivo.h"
 	"../Fila.h"

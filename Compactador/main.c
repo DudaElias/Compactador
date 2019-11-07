@@ -9,28 +9,33 @@ int main()
     printf("Projeto Compactador em C\n");
     printf("Feito por Lorenna Nunes e Maria Eduarda Rocha\n");
     printf("---------------------------------------------\n\n");
-    printf("Selecione uma das opções abaixo:\n");
-    printf("1 - Compactar um arquivo\n");
-    printf("2 - Descompactar um arquivo\n");
-    printf("3 - Sair\n\n");
-    printf("Escolha: ");
 
-    scanf("%d", &escolha);
-
-    switch(escolha)
+    do
     {
-        case 1:
-            printf("Digite o caminho do arquivo: ");
-            scanf("%s" , &nome);
-            lerArq(nome, 'c');
-            break;
-        case 2:
-            printf("Digite o caminho do arquivo: ");
-            scanf("%s" , &nome);
-            lerArq(nome, 'd');
-            break;
-            break;
+        printf("Selecione uma das opções abaixo:\n");
+        printf("1 - Compactar um arquivo\n");
+        printf("2 - Descompactar um arquivo\n");
+        printf("3 - Sair\n\n");
+        printf("Escolha: ");
+
+        scanf("%d", &escolha);
+
+            switch(escolha)
+            {
+                case 1:
+                    printf("Digite o caminho do arquivo: ");
+                    scanf("%s" , &nome);
+                    lerArq(nome, 'c');
+                    break;
+                case 2:
+                    printf("Digite o caminho do arquivo: ");
+                    scanf("%s" , &nome);
+                    lerArq(nome, 'd');
+                    break;
+                default:
+                    break;
+            }
     }
+    while(escolha != 3);
     return 0;
-    system("pause");
 }
