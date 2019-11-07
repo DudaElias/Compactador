@@ -167,7 +167,6 @@ void lerArq(char *nome, char tipo)
             unsigned char aux;
             int codigoAtual = 0;
             inicio->codigo = NULL;
-            printf("codigos:\n");
 
             while(fread(&aux, sizeof(char), 1, arq))
             {

@@ -1,22 +1,22 @@
 # depslib dependency file v1.0
-1572535716 source:c:\users\u18190\documents\github\compactador\arvore.c
+1571436450 source:c:\users\u18190\documents\github\compactador\arvore.c
 
-1572974572 source:c:\users\u18190\documents\github\compactador\fila.c
+1573156051 source:c:\users\u18190\documents\github\compactador\fila.c
 	"Fila.h"
 	<stdlib.h>
 
-1572634401 c:\users\u18190\documents\github\compactador\fila.h
+1571777131 c:\users\u18190\documents\github\compactador\fila.h
 
-1572974572 source:c:\users\u18190\documents\github\compactador\compactador\main.c
+1573156051 source:c:\users\u18190\documents\github\compactador\compactador\main.c
 	<stdio.h>
 	"../Arquivo.h"
 	"../Fila.h"
 
-1572974572 c:\users\u18190\documents\github\compactador\arquivo.h
+1573156050 c:\users\u18190\documents\github\compactador\arquivo.h
 	<stdio.h>
 	"Fila.h"
 
-1572987311 source:c:\users\u18190\documents\github\compactador\arquivo.c
+1573156050 source:c:\users\u18190\documents\github\compactador\arquivo.c
 	"Arquivo.h"
 	<stdio.h>
 	<stdlib.h>

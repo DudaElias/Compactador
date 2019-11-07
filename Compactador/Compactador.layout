@@ -8,11 +8,8 @@
 	</File>
 	<File name="..\Arquivo.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="8815" topLine="254" />
+			<Cursor1 position="4592" topLine="103" />
 		</Cursor>
-		<Folding>
-			<Collapse line="329" />
-		</Folding>
 	</File>
 	<File name="..\Arquivo.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
