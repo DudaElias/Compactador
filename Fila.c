@@ -1,43 +1,54 @@
 #include "Fila.h"
 #include <stdlib.h>
 
-NoFila* create()
+void create(Fila** f)
 {
-    NoFila* n = (NoFila*)malloc(256*sizeof(NoFila));
-    n->dado = NULL;
-    n->prox = NULL;
-    return n;
+    (*f) = (Fila*)malloc(sizeof(Fila));
+    (*f)->primeiro = NULL;
 }
 
-void push(NoFila **raiz, NoArvore *dado)
+void push(Fila **raiz, NoArvore *dado)
 {
 
-    NoFila *fila = *raiz;
-    NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
-    novoNo->dir = dado->dir;
-    novoNo->esq = dado ->esq;
-    novoNo->freq = dado->freq;
-    novoNo->letra = dado->letra;
-    novoNo->vazio = dado->vazio;
-    NoFila* novoNoFila = (NoFila*)malloc(sizeof(NoFila));
-    novoNoFila->dado = novoNo;
-    novoNoFila->prox = NULL;
-    if(fila->dado == NULL)
+    NoFila* in;
+    NoFila* out;
+    if((*raiz)->primeiro == NULL)
     {
-        fila->dado = novoNo;
+        (*raiz)->primeiro = (NoFila*)malloc(sizeof(NoFila));
+        (*raiz)->primeiro->dado = dado;
+        (*raiz)->primeiro->prox = NULL;
     }
+
     else
     {
-        if(fila->dado->freq > novoNo->freq)
+
+        char achou = 0;
+
+        in = (*raiz)->primeiro;
+        out = NULL;
+        while(in != NULL && !achou)
         {
-            novoNoFila->prox = fila;
-            *raiz = novoNoFila;
-            return;
+            if(dado->freq < in->dado->freq)
+            {
+                NoFila* inserido = (NoFila*)malloc(sizeof(NoFila));
+                inserido->dado = dado;
+                inserido->prox = in;
+                if(out != NULL)
+                    out->prox = inserido;
+                else
+                    (*raiz)->primeiro = inserido;
+                achou = 5;
+            }
+            out = in;
+            in = in->prox;
         }
-        while(fila->prox != NULL && fila->prox->dado->freq <= novoNo->freq)
-            fila = fila->prox;
-        novoNoFila->prox = fila->prox;
-        fila->prox = novoNoFila;
+        if(!achou)
+        {
+            NoFila* inserido = (NoFila*)malloc(sizeof(NoFila));
+            inserido->dado = dado;
+            inserido->prox = NULL;
+            out->prox = inserido;
+        }
     }
 
 }
@@ -56,41 +67,18 @@ void percorrer(NoFila *f)
 
 }
 
-NoArvore* pop(NoFila **f)
+NoArvore* pop(Fila *f)
 {
     //NoFila* temp = fila->primeiro;
     //fila->primeiro = fila->primeiro->prox;
 
-    if(f == NULL){
+    if(f->primeiro == NULL){
         return NULL;
     }
 
-    NoArvore* c = (*f)->dado;
-    NoFila *t = *f;
-    (*f) = (*f)->prox;
+    NoArvore* c = f->primeiro->dado;
+    NoFila *t = f->primeiro;
+    f->primeiro = f->primeiro->prox;
     free(t);
     return c;
-    /*
-    NoArvore *c = (NoArvore*)malloc(sizeof(NoArvore));
-    if(f->prox == NULL)
-    {
-        c->dir = f->dado->dir;
-        c->esq = f->dado ->esq;
-        c->freq = f->dado->freq;
-        c->letra = f->dado->letra;
-        c->vazio = f->dado->vazio;
-        f->dado = NULL;
-    }
-    else
-    {
-        c->dir = f->dado->dir;
-        c->esq = f->dado ->esq;
-        c->freq = f->dado->freq;
-        c->letra = f->dado->letra;
-        c->vazio = f->dado->vazio;
-        f->dado = f->prox->dado;
-        f->prox = f->prox->prox;
-    }
-
-    return c;*/
 }

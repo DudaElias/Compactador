@@ -25,7 +25,7 @@ extern void lerArq(char *nome, char tipo);
 extern void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim);
 extern void percorrerArvore(NoArvore* a);
 extern void percorrerFila(NoFila* f);
-extern void criarArvore(NoFila* f);
+extern void criarArvore(Fila* f);
 extern void criarTabela(NoArvore* a, char codigo[], int topo);
 extern void criarArquivo(char* nome);
 

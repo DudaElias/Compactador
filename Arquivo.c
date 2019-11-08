@@ -21,10 +21,19 @@ int quantosBytes;
 unsigned char *vetorDeLetras;
 
 
-void criarArvore(NoFila* f)
+void criarArvore(Fila* f)
 {
-    NoArvore* novoNo = (NoArvore*)malloc(sizeof(NoArvore));
-    novoNo->esq = pop(&f);
+    NoArvore* novoNo;
+    while(f->primeiro->prox != NULL)
+    {
+        novoNo = (NoArvore*)malloc(sizeof(NoArvore));
+        novoNo->esq = pop(f);
+        novoNo->dir = pop(f);
+        novoNo->letra = 0;
+        novoNo->freq = novoNo->esq->freq + novoNo->dir->freq;
+        push(&f, novoNo);
+    }
+    /*novoNo->esq = pop(&f);
     printf("esquerda: \n");
     printf("%d\t", novoNo->esq->letra);
         printf("%d\n", novoNo->esq->freq);
@@ -38,7 +47,7 @@ void criarArvore(NoFila* f)
     novoNo->freq = novoNo->esq->freq + novoNo->dir->freq;
     novoNo->letra = NULL;
     push(&f, novoNo);
-    free(novoNo);
+    free(novoNo);*/
 }
 void percorrerArvore(NoArvore* a)
 {
@@ -78,7 +87,7 @@ void lerArq(char *nome, char tipo)
 {
     quantosBytes= 0;
     //se o arquivo aberto para leitura estiver nulo
-    if( (arq = fopen(nome, "rb")) == NULL)
+    if( (arq = fopen(nome, "rb+")) == NULL)
     {
         printf("Nao foi possivel abrir o arquivo, verifique sua existencia e o caminho");
     }
@@ -102,7 +111,8 @@ void lerArq(char *nome, char tipo)
         //se o usuario escolher a opção de compactar
         if(tipo == 'c')
         {
-            NoFila* f = create();
+            Fila* fila = NULL;
+            create(&fila);
             char achou;
             printf("Compactando!\n");
             //enquanto consegue-se ler um byte do arquivo
@@ -167,16 +177,12 @@ void lerArq(char *nome, char tipo)
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                push(&f, x);
-                free(x);
+                push(&fila, x);
             }
             j = 0;
-            percorrerFila(f);
-            while(f->prox != NULL)
-            {
-                criarArvore(f);
-            }
-            percorrerArvore(f->dado);
+            percorrerFila(fila->primeiro);
+            criarArvore(fila);
+            percorrerArvore(fila->primeiro->dado);
             codigos = (Tabela*)malloc(300*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->primeiro = 1;
@@ -184,7 +190,7 @@ void lerArq(char *nome, char tipo)
             codigos->codigo = NULL;
             int topo = 0;
             char codigo[257];
-            criarTabela(f->dado, codigo, topo);
+            criarTabela(fila->primeiro->dado, codigo, topo);
             inicio = (Tabela*)malloc(300*sizeof(Tabela));
             inicio->prox = codigos;
             inicio->letra = NULL;
@@ -254,7 +260,8 @@ void lerArq(char *nome, char tipo)
             rewind(arq);
             fread(&lixo, sizeof(char),1, arq);
             fread(&tamanho, sizeof(int),1, arq);
-            NoFila* f = create();
+            Fila* fila = NULL;
+            create(&fila);
             for(;i<tamanho;i++){
                 fread(&letra, sizeof(char),1, arq);
                 fread(&freq, sizeof(int),1, arq);
@@ -264,14 +271,11 @@ void lerArq(char *nome, char tipo)
                 x->dir = NULL;
                 x->esq = NULL;
                 x->vazio = 0;
-                push(&f, x);
+                push(&fila, x);
                 //free(x);
             }
             i = 0;
-            while(tamanho >= 2)
-            {
-                criarArvore(f);
-            }
+            criarArvore(fila);
             char nome1[240];
             int tamanhoNome = strlen(nome);
             memset(nome1, '\0', sizeof(nome1));
@@ -293,7 +297,7 @@ void lerArq(char *nome, char tipo)
                 qtd = 8;
                 if(ftell(arq) == fim)
                     qtd = 8 - lixo;
-                escreverArqD(&aux, f->dado, qtd, fim);
+                escreverArqD(&aux, fila->primeiro->dado, qtd, fim);
             }
             fclose(arq);
             fclose(arqSaida);

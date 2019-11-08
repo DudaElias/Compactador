@@ -9,6 +9,13 @@ typedef struct NoArvore
     struct NoArvore *esq, *dir;
 }NoArvore;
 
+
+
+typedef struct Fila{
+    struct NoFila* primeiro;
+}Fila;
+
+
 typedef struct NoFila{
     NoArvore* dado;
     struct NoFila* prox;
@@ -16,9 +23,9 @@ typedef struct NoFila{
 }NoFila;
 
 
-extern NoFila* create();
-extern void push(NoFila **f, NoArvore *dado);
+extern void create(Fila**f);
+extern void push(Fila **f, NoArvore *dado);
 extern void percorrer(NoFila *f);
-extern NoArvore* pop(NoFila **f);
+extern NoArvore* pop(Fila *f);
 
 #endif
