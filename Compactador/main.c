@@ -4,7 +4,7 @@
 int main()
 {
     int escolha;
-    char nome[240];
+    char nome[200];
 
     printf("Projeto Compactador em C\n");
     printf("Feito por Lorenna Nunes e Maria Eduarda Rocha\n");
@@ -25,14 +25,11 @@ int main()
                 case 1:
                     printf("Digite o caminho do arquivo: ");
                     scanf("%s" , &nome);
-                    fflush(stdin);
                     lerArq(nome, 'c');
                     break;
                 case 2:
                     printf("Digite o caminho do arquivo: ");
                     scanf("%s" , &nome);
-
-                    fflush(stdin);
                     lerArq(nome, 'd');
                     break;
                 default:

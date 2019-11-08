@@ -18,7 +18,7 @@ typedef struct Letra{
 
 FILE *arq;
 unsigned char *vetorDeLetras;
-long int tamanho;
+int tamanho;
 Tabela *codigos;
 int quantosBytes;
 extern void lerArq(char *nome, char tipo);
