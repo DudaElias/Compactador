@@ -16,10 +16,9 @@ Tabela* codigos;
 Tabela* inicio;
 NoArvore* auxCodigo;
 int *frequencias;
-int tamanho;
+long int tamanho;
 int quantosBytes;
 unsigned char *vetorDeLetras;
-
 
 void criarArvore(NoFila* f)
 {
@@ -84,14 +83,14 @@ void lerArq(char *nome, char tipo)
             NoFila* f = create();
             char achou;
             printf("Compactando!\n");
-            //enquanto consegue-se ler um byte do arquivo
+            //enquanto consegue-se ler um char do arquivo
             while(fread(&aux, sizeof(char), 1, arq))
             {
                 quantosBytes = quantosBytes +1;
                 achou = 0;
                 if(tamanho == 0)
                 {
-                    //vetor recebe a letra correspondente ao byte lido
+                    //vetor recebe a letra correspondente ao char lido
                     vetorDeLetras[tamanho] = aux;
                     frequencias[tamanho] = 1;
                     tamanho++;
@@ -116,6 +115,7 @@ void lerArq(char *nome, char tipo)
                 }
             }
 
+            //começa a compactação
             //reinicia o arquivo
             rewind(arq);
             quantosBytes = 0;
@@ -125,8 +125,11 @@ void lerArq(char *nome, char tipo)
                 printf("Erro na abertura do arquivo!");
                 return 1;
             }
+
+            printf("Compactando!\n");
             fwrite(" ", sizeof(char), 1, arqSaida);
 
+            //transformando os int para char
             unsigned char byte1 = (tamanho & 255);
             unsigned char byte2 = ((tamanho>>8) & 255);
             unsigned char byte3 = ((tamanho>>16) & 255);
@@ -138,6 +141,7 @@ void lerArq(char *nome, char tipo)
             fwrite(&byte4, sizeof(char), 1, arqSaida);
             int j = 0;
 
+            //repetição para criar os nós das árvores
             for(;j < tamanho;j++)
             {
                 NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
@@ -150,11 +154,18 @@ void lerArq(char *nome, char tipo)
                 free(x);
             }
             j = 0;
+
+            printf("Compactando!\n");
             percorrerFila(f);
+
+            printf("Compactando!\n");
+
             while(tamanho >= 2)
             {
                 criarArvore(f);
             }
+
+            printf("Compactando!\n");
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->primeiro = 1;
@@ -370,4 +381,3 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
         }
     }
 }
-
