@@ -3,7 +3,7 @@
 
 NoFila* create()
 {
-    NoFila* n = (NoFila*)malloc(sizeof(NoFila));
+    NoFila* n = (NoFila*)malloc(256*sizeof(NoFila));
     n->dado = NULL;
     n->prox = NULL;
     return n;
@@ -56,8 +56,21 @@ void percorrer(NoFila *f)
 
 }
 
-NoArvore* pop(NoFila *f)
+NoArvore* pop(NoFila **f)
 {
+    //NoFila* temp = fila->primeiro;
+    //fila->primeiro = fila->primeiro->prox;
+
+    if(f == NULL){
+        return NULL;
+    }
+
+    NoArvore* c = (*f)->dado;
+    NoFila *t = *f;
+    (*f) = (*f)->prox;
+    free(t);
+    return c;
+    /*
     NoArvore *c = (NoArvore*)malloc(sizeof(NoArvore));
     if(f->prox == NULL)
     {
@@ -78,5 +91,6 @@ NoArvore* pop(NoFila *f)
         f->dado = f->prox->dado;
         f->prox = f->prox->prox;
     }
-    return c;
+
+    return c;*/
 }
