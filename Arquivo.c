@@ -10,82 +10,53 @@
 @since 2019.
 */
 
-FILE *arq;
-FILE *arqSaida;
-Tabela* codigos;
-Tabela* inicio;
-NoArvore* auxCodigo;
-int *frequencias;
-int tamanho;
-int quantosBytes;
-unsigned char *vetorDeLetras;
+FILE *arq;                   // arquivo de entrada
+FILE *arqSaida;              // arquivo de saida
+Tabela* codigos;             // Tabela dos códigos para a compactação
+Tabela* inicio;              // Inicio da tabela de códigos para a compactação
+NoArvore* auxCodigo;         // Auxiliar para a descompactação de arquivo, caso o byte tenha acabado e ainda falta
+                             // percorrer um pedaço da arvore para chegar na folha onde parou no percurso da arvore é
+                             // armazenado nessa variavel
+int *frequencias;            // vetor de controle de frequencias do caracter no arquivo original
+int tamanho;                 // quantos caracteres diferentes tem o arquivo
+unsigned char *vetorDeLetras;// vetor que caminha junto com frequencias mas dessa vez como o caracter que tem aquela frequencia
 
 
-void criarArvore(Fila* f)
+void criarArvore(Fila* f) //cria a arvore tanto na compactação quanto na descompatação
 {
-    NoArvore* novoNo;
-    while(f->primeiro->prox != NULL)
+    NoArvore* inserido; // no a ser inserido com a união dos dois primeiros da fila
+    while(f->primeiro->prox != NULL) // enquanto existirem mais de 1 dado na fila
     {
-        novoNo = (NoArvore*)malloc(sizeof(NoArvore));
-        novoNo->esq = pop(f);
-        novoNo->dir = pop(f);
-        novoNo->letra = 0;
-        novoNo->freq = novoNo->esq->freq + novoNo->dir->freq;
-        push(&f, novoNo);
+        inserido = (NoArvore*)malloc(sizeof(NoArvore));
+        inserido->esq = pop(f);
+        inserido->dir = pop(f);
+        inserido->letra = 0;
+        inserido->vazio = 1; //coloca aquele no como vazio, variavel de controle para saber se eh folha ou n
+        inserido->freq = inserido->esq->freq + inserido->dir->freq; // soma das frequencias
+        push(&f, inserido); // insere o dado em ordem na fila
     }
 }
-void percorrerArvore(NoArvore* a)
-{
-    if(a == NULL)
-        return;
-    Letra t;
-    t.letra = a->letra;
-    t.freq = a->freq;
-    int j = 0;
-    printf("%c\t", a->letra);//quando eu uso o << ou +
-    printf("%d\n", a->freq);
 
-    percorrerArvore(a->esq);
-    percorrerArvore(a->dir);
-}
-
-void percorrerFila(NoFila *f)
+void percorrerFila(NoFila *f) // percorre a fila para inserir ela no arquivo compactado
 {
-    int k = 1;
-    NoFila* n = f; //criar o n é necessário?
+    NoFila* n = f;
     while(n != NULL)
     {
-        fwrite(&n->dado->letra, sizeof(char), 1, arqSaida);
-        unsigned char byte1 = (n->dado->freq & 255);
-        unsigned char byte2 = ((n->dado->freq>>8) & 255);
+        fwrite(&n->dado->letra, sizeof(char), 1, arqSaida); // imprime o caracter
+        unsigned char byte1 = (n->dado->freq & 255); // divide o inteiro de frequencia em 4 char para o arquivo,
+        unsigned char byte2 = ((n->dado->freq>>8) & 255); // fwrite de inteiro trazia problemas de inversão de dados
         unsigned char byte3 = ((n->dado->freq>>16) & 255);
         unsigned char byte4 = ((n->dado->freq>>24) & 255);
         fwrite(&byte1, sizeof(char), 1, arqSaida);
         fwrite(&byte2, sizeof(char), 1, arqSaida);
         fwrite(&byte3, sizeof(char), 1, arqSaida);
         fwrite(&byte4, sizeof(char), 1, arqSaida);
-        k = k +1;
         n = n->prox;
     }
 }
-void percorrerFilaD(NoFila *f)
-{
-    int k = 1;
-    NoFila* n = f; //criar o n é necessário?
-    while(n != NULL)
-    {
-        printf("%c\t", n->dado->letra);
-        printf("%d\n", n->dado->freq);
-
-        k = k +1;
-        n = n->prox;
-    }
-}
-
 
 void lerArq(char *nome, char tipo)
 {
-    quantosBytes= 0;
     //se o arquivo aberto para leitura estiver nulo
     if( (arq = fopen(nome, "rb+")) == NULL)
     {
@@ -93,6 +64,8 @@ void lerArq(char *nome, char tipo)
     }
     else
     {
+
+        //Verifica se o arquivo está vazio, caso esteja, avisa o usuario e finaliza o programa
         fseek(arq, 0, SEEK_END);
         int size= ftell(arq);
         if(size == 0)
@@ -100,25 +73,24 @@ void lerArq(char *nome, char tipo)
              printf("Arquivo vazio!");
              return;
         }
-        rewind(arq);
+        rewind(arq); // volta o ponteiro de percurso para o inicio do arquivo
         tamanho = 0;
         int i = 0;
         int dados = 0;
-        unsigned char aux;
-        vetorDeLetras = (unsigned char*)malloc(257*sizeof(char));
-        frequencias = (int*)malloc(257*sizeof(int));
+        unsigned char aux; // variavel que auxilia na compactacao e descompactacao para ler o arquivo original
+        vetorDeLetras = (unsigned char*)malloc(257*sizeof(char)); // aloca 257 posicoes ao vetor de letras
+        frequencias = (int*)malloc(257*sizeof(int));// aloca 257 posicoes ao vetor de frequencias
 
         //se o usuario escolher a opção de compactar
         if(tipo == 'c')
         {
             Fila* fila = NULL;
-            create(&fila);
+            create(&fila); // cria a fila
             char achou;
             printf("Compactando!\n");
             //enquanto consegue-se ler um byte do arquivo
-            while(fread(&aux, sizeof(char), 1, arq))
-            {
-                quantosBytes = quantosBytes +1;
+            while(fread(&aux, sizeof(char), 1, arq)) // enquanto existir coisas no arquivo original será lido
+            {                                        //e inserido no vetor de frequencias e de letras
                 achou = 0;
                 if(tamanho == 0)
                 {
@@ -147,17 +119,18 @@ void lerArq(char *nome, char tipo)
                 }
             }
 
-            //reinicia o arquivo
+            //volta o ponteiro de percurso do arquivo para a posicao inicial
             rewind(arq);
-            quantosBytes = 0;
-            arqSaida = fopen(strcat(nome, ".dao"),"wb");
-            if(arqSaida == NULL)
+
+            //INICIO DA COMPACTACAO
+            arqSaida = fopen(strcat(nome, ".dao"),"wb"); //eh aberto um arquivo de saida que sera o nome do arquivo original mais a extensao dao
+            if(arqSaida == NULL) // se o arquivo de saida for nulo significa que nao foi possivel inicia-lo
             {
                 printf("Erro na abertura do arquivo!");
                 return 1;
             }
-            fwrite(" ", sizeof(char), 1, arqSaida);
-            unsigned char byte1 = (tamanho & 255);
+            fwrite(" ", sizeof(char), 1, arqSaida); // espaco sera ocupado por bits de lixo ao final da compactacao
+            unsigned char byte1 = (tamanho & 255); // separa o tamanho (que eh um int) em 4 bytes e escreve no arquivo compactado
             unsigned char byte2 = ((tamanho>>8) & 255);
             unsigned char byte3 = ((tamanho>>16) & 255);
             unsigned char byte4 = ((tamanho>>24) & 255);
@@ -167,7 +140,7 @@ void lerArq(char *nome, char tipo)
             fwrite(&byte4, sizeof(char), 1, arqSaida);
             int j = 0;
 
-            for(;j < tamanho;j++)
+            for(;j < tamanho;j++) // aqui ocorre a montagem da fila propriamente dita, usando o vetor de letras e frequencias
             {
                 NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
                 x->freq = (int)frequencias[j];
@@ -178,8 +151,8 @@ void lerArq(char *nome, char tipo)
                 push(&fila, x);
             }
             j = 0;
-            percorrerFila(fila->primeiro);
-            criarArvore(fila);
+            percorrerFila(fila->primeiro); // escrever a fila no arquivo compactado
+            criarArvore(fila); // criacao da arvore a partir da fila
             codigos = (Tabela*)malloc(tamanho*sizeof(Tabela));
             codigos->prox = NULL;
             codigos->primeiro = 1;
@@ -187,59 +160,56 @@ void lerArq(char *nome, char tipo)
             codigos->codigo = NULL;
             int topo = 0;
             char codigo[257];
-            criarTabela(fila->primeiro->dado, codigo, topo);
+            criarTabela(fila->primeiro->dado, codigo, topo); //monta a tabela de codigos para a compactacao
             inicio = (Tabela*)malloc(tamanho*sizeof(Tabela));
             inicio->prox = codigos;
             inicio->letra = NULL;
 
-            int tamanhoCodigoEmByte = 0;
-            char* falta;
-            int byte = 0;
-            unsigned char aux;
-            int codigoAtual = 0;
+            int tamanhoCodigoEmByte = 0; // variavel de controle para saber quantos bits existem no byte a ser inserido no arquivo compactado
+            int byte = 0; //variavel que armazenara os codigos binarios como inteiros
+            int codigoAtual = 0; // variavel que recebera o valor do codigo binario para decimal
             inicio->codigo = NULL;
 
-            while(fread(&aux, sizeof(char), 1, arq))
+            while(fread(&aux, sizeof(char), 1, arq)) // enquanto puder ler o arquivo original para a compactacao
             {
-                while(codigos->letra != aux && codigos != NULL)
+                while(codigos->letra != aux && codigos != NULL) // percorre ate achar o codigo daquele caracter
                 {
                     codigos = codigos->prox;
                 }
                 if(codigos->letra == aux)
                 {
                     int i = 0;
-                    for(;i<codigos->tamanho; i++)
+                    for(;i<codigos->tamanho; i++) // transforma o codigo em inteiro
                     {
                         if(codigos->codigo[i] == '1')
                             codigoAtual += pow(2,(codigos->tamanho-1 - i));
                     }
 
-                    byte = byte << codigos->tamanho;
-                    byte += codigoAtual;
+                    byte = byte << codigos->tamanho; // byte "caminha" o tamanho do codigo a ser inserido para a esquerda
+                    byte += codigoAtual; // byte recebe o codigo a ser inserido
                     codigoAtual = 0;
-                    tamanhoCodigoEmByte += codigos->tamanho;
-                    while(tamanhoCodigoEmByte >=8)
+                    tamanhoCodigoEmByte += codigos->tamanho; // aumenta o tamanho da variavel de controle como o tamanho do codigo que foi inserido
+                    while(tamanhoCodigoEmByte >=8) // enquanto já tiver bytes completos para ser inseridos no arquivo
                     {
-                        unsigned char byteEscrever = byte >> (tamanhoCodigoEmByte - 8);
-                        fwrite(&byteEscrever, sizeof(char), 1, arqSaida);
-                        byte = byte << sizeof(int) * 8 - tamanhoCodigoEmByte + 8;
-                        byte = byte >> sizeof(int) * 8 - tamanhoCodigoEmByte + 8;
-                        tamanhoCodigoEmByte = tamanhoCodigoEmByte - 8;
+                        unsigned char byteEscrever = byte >> (tamanhoCodigoEmByte - 8); // byteEscrever recebe os 8 primeiros bits de byte
+                        fwrite(&byteEscrever, sizeof(char), 1, arqSaida); // escreve o byte no arquivo compactado
+                        byte = byte << sizeof(int) * 8 - tamanhoCodigoEmByte + 8; //retira o byte escrito de byte
+                        byte = byte >> sizeof(int) * 8 - tamanhoCodigoEmByte + 8; // volta byte para a posicao anterior, agora sem os bits retirados
+                        tamanhoCodigoEmByte = tamanhoCodigoEmByte - 8; // reduz 8 no tamanho de codigos a inserir
                     }
 
-                    codigos = inicio->prox;
+                    codigos = inicio->prox; // volta codigos para o inicio
                 }
             }
-            if(tamanhoCodigoEmByte != 0)
+            if(tamanhoCodigoEmByte != 0) // caso tenha acabado a leitura do arquivoe ainda exista coisas a serem inseridas
             {
-                byte = byte << 8 - tamanhoCodigoEmByte;
-                fwrite(&byte, sizeof(char), 1, arqSaida);
-                fseek(arqSaida, 0, SEEK_SET);
-                int t = 8 - tamanhoCodigoEmByte;
-                fwrite(&t, sizeof(char), 1, arqSaida);
+                byte = byte << 8 - tamanhoCodigoEmByte; // byte "andara" o que falta para completar um byte para a esquerda
+                fwrite(&byte, sizeof(char), 1, arqSaida); // sera escrito o byte final
+                fseek(arqSaida, 0, SEEK_SET); // volta o arquivo para o inicio
+                int t = 8 - tamanhoCodigoEmByte; // calcula o numero de bits lixo
+                fwrite(&t, sizeof(char), 1, arqSaida);//substitui o espaco pela quantidade de bits lixo
             }
-            free(falta);
-            fclose(arqSaida);
+            fclose(arqSaida); // fecha arquivos
             fclose(arq);
             free(fila);
             printf("Arquivo compactado com sucesso!\n\n\n");
@@ -252,14 +222,15 @@ void lerArq(char *nome, char tipo)
             unsigned char letra;
             char lixo = 0;
             int i=0;
-            fseek(arq, 0, SEEK_END);
+            fseek(arq, 0, SEEK_END); // vai ate o final do arquivo para saber quando chegou ao byte final na descompactacao
             long int fim = ftell(arq);
             rewind(arq);
-            fread(&lixo, sizeof(char),1, arq);
-            fread(&tamanho, sizeof(int),1, arq);
+            fread(&lixo, sizeof(char),1, arq); // le qts bits lixo
+            fread(&tamanho, sizeof(int),1, arq);//le qts caracteres diferentes
             Fila* fila = NULL;
-            create(&fila);
-            for(;i<tamanho;i++){
+            create(&fila); //inicia fila
+
+            for(;i<tamanho;i++){ // forma a fila usando a fila no arquivo de compactacao
                 fread(&letra, sizeof(char),1, arq);
                 fread(&freq, sizeof(int),1, arq);
                 NoArvore *x = (NoArvore*)malloc(sizeof(NoArvore));
@@ -269,37 +240,35 @@ void lerArq(char *nome, char tipo)
                 x->esq = NULL;
                 x->vazio = 0;
                 push(&fila, x);
-                //free(x);
             }
-            percorrerFilaD(fila->primeiro);
+
             i = 0;
-            criarArvore(fila);
-            percorrerArvore(fila->primeiro->dado);
+            criarArvore(fila); // cria a arvore a partir da fila
+
             char nome1[240];
             int tamanhoNome = strlen(nome);
             memset(nome1, '\0', sizeof(nome1));
 
-            strncpy(nome1, nome, tamanhoNome-4);
-            arqSaida = fopen(nome1,"wb+");
+            strncpy(nome1, nome, tamanhoNome-4); // retira a extensao .dao
+            arqSaida = fopen(nome1,"wb+"); // abre o arquivo para escrita do descompactado
             if(arqSaida == NULL)
             {
                 printf("Erro na abertura do arquivo!");
                 return 1;
             }
-            auxCodigo = (NoArvore*)malloc(256*sizeof(NoArvore));
+            auxCodigo = (NoArvore*)malloc(sizeof(NoArvore));
             auxCodigo = NULL;
 
             char qtd;
             int cont= 0;
             while(fread(&aux,sizeof(char),1,arq))
             {
-                printf("%d\n", aux);
                 qtd = 8;
-                if(ftell(arq) == fim)
+                if(ftell(arq) == fim) // se for o byte final qtd recebera somente o quanto do byte eh valido
                     qtd = 8 - lixo;
-                escreverArqD(&aux, fila->primeiro->dado, qtd, fim);
+                escreverArqD(&aux, fila->primeiro->dado, qtd, fim); // acha os codigos e escreve no arquivo descompactado os caracteres corretos
             }
-            fclose(arq);
+            fclose(arq); // fecha os arquivos
             fclose(arqSaida);
 
             printf("Arquivo descompactado com sucesso!\n\n\n");
@@ -311,77 +280,73 @@ void escreverArqD(unsigned char *car, NoArvore *raiz, char qtd, int fim){
     unsigned char aux;
     int t = 7;
     NoArvore *no = (NoArvore*)malloc(sizeof(NoArvore));
-    if(auxCodigo == NULL)
+    if(auxCodigo == NULL) // se n tiver no meio do percurso no recebe raiz
         no = raiz;
-    else{
+    else{ // se estiver no recebe onde parou no percurso
         no = auxCodigo;
         auxCodigo = NULL;
     }
-    while(t != -1 && qtd > 0)
+    while(t != -1 && qtd > 0) // enquanto n tiver percorrido todo o byte e qtd for maior que 0
     {
-        while(no->vazio && t >=0){
-            aux = *car >> 7;
-            *car = *car << 1;
+        while(no->vazio && t >=0){ // enquanto n for folha
+            aux = *car >> 7; // pega um bit
+            *car = *car << 1; // retira o bit
 
             t--;
-            if(aux==1){
+            if(aux==1){ // se o bit lido for um, ir para direita
                 no = no->dir;
             }
-            else if(aux==0){
+            else if(aux==0){ // se for 0 para a esquerda
                 no = no->esq;
             }
         }
-        if(t == -1 && no->dir != NULL || no->esq != NULL)
+        if(t == -1 && no->dir != NULL || no->esq != NULL)// caso tenha acabado de ler o byte e n tiver chegado em uma folha auxCodigo recebe onde parou no percurso
         {
             auxCodigo = no;
             break;
         }
 
-        if(ftell(arq) == fim)
+        if(ftell(arq) == fim) // se for o fim, ir decrescendo o qtd ate chegar em 0
         {
             qtd -= 7-t;
         }
-
-        fwrite(&(no->letra), sizeof(char), 1, arqSaida);
+        fwrite(&(no->letra), sizeof(char), 1, arqSaida); // escreve o caracter encontrado no arquivo descompactado
         no = raiz;
     }
 }
 
-void criarTabela(NoArvore* a, char codigo[], int topo)
+void criarTabela(NoArvore* a, char codigo[], int topo) // cria a tabela de codigos
 {
     int i;
-    if(a->esq)
+    if(a->esq) // enquanto for possivel ir para a esquerda
     {
-        codigo[topo] = '0';
-        criarTabela(a->esq, codigo, topo+1);
+        codigo[topo] = '0'; // adicionar 0 ao topo do vetor de codigo
+        criarTabela(a->esq, codigo, topo+1); // ir para a esquerda
     }
-    if(a->dir)
+    if(a->dir) // enquanto for possivel ir para a direita
     {
-        codigo[topo] = '1';
-        criarTabela(a->dir, codigo, topo+1);
+        codigo[topo] = '1'; // adicionar 1 ao topo do vetor de codigo
+        criarTabela(a->dir, codigo, topo+1);//ir para a direita
     }
-    if(a->esq == NULL && a->dir == NULL)
+    if(a->esq == NULL && a->dir == NULL) // se for folha
     {
         Tabela *ta = codigos;
         i = 0;
         char* codigoReal = (char*)malloc(topo * sizeof(char));
-        printf("%c\t", a->letra);
-        for(; i < topo; i++)
+        for(; i < topo; i++) // retira o lixo do final do vetor de codigo encontrado
         {
-            printf("%c", codigo[i]);
             codigoReal[i] = codigo[i];
         }
-        printf("\n");
 
 
-        Tabela* t = (Tabela*)malloc(sizeof(Tabela));
+        Tabela* t = (Tabela*)malloc(sizeof(Tabela)); // adiciona uma tabela
         t->codigo = codigoReal;
         t->letra =  a->letra;
         t->prox = NULL;
         t->tamanho = topo;
         t->primeiro = 0;
 
-        if(ta->primeiro == 1)
+        if(ta->primeiro == 1) // caso tabela esteja vazio, adiciona o t como o primeiro
         {
             ta->codigo = codigoReal;
             ta->letra = a->letra;
@@ -389,7 +354,7 @@ void criarTabela(NoArvore* a, char codigo[], int topo)
             ta->prox = NULL;
             ta->primeiro = 0;
         }
-        else
+        else // caso n adiciona no fim da tabela de codigos
         {
             while(ta->prox != NULL)
             {
